@@ -1,0 +1,7 @@
+{
+  "name": "Vocabular.io Server",
+  "description": "Server for the vocabular.io service",
+  "repository": "https://github.com/dhchoi/vocabulario-server",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"]
+}
