@@ -10,6 +10,7 @@ module.exports = function (passport, config) {
     router.route("/")
         .all(function (req, res, next) {
             next();
+            console.dir(req);
         })
         .get(function (req, res) {
             res.render('home', {
@@ -76,7 +77,6 @@ module.exports = function (passport, config) {
             req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
 
             var errors = req.validationErrors();
-
             if (errors) {
                 req.flash('errors', errors);
                 return res.redirect('/signup');
@@ -92,10 +92,17 @@ module.exports = function (passport, config) {
                     req.flash('errors', {msg: 'Account with that email address already exists.'});
                     return res.redirect('/signup');
                 }
+
                 user.save(function (err) {
-                    if (err) return next(err);
+                    if (err) {
+                        return next(err);
+                    }
+
                     req.logIn(user, function (err) {
-                        if (err) return next(err);
+                        if (err) {
+                            return next(err);
+                        }
+
                         res.redirect('/');
                     });
                 });

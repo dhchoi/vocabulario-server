@@ -31,4 +31,5 @@ module.exports = function (passport, config) {
     passport.use(require('./passport/twitter')(User, config));
     passport.use(require('./passport/facebook')(User, config));
     passport.use(require('./passport/google')(User, config));
+    passport.use(require('./passport/bearer')(User, config));
 };

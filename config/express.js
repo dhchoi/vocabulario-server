@@ -10,13 +10,14 @@ var logger = require('morgan');
 var errorHandler = require('errorhandler');
 var lusca = require('lusca');
 var methodOverride = require('method-override');
-var multer  = require('multer');
+var multer = require('multer');
 var _ = require('lodash');
 var MongoStore = require('connect-mongo')(session);
 var flash = require('express-flash');
 var path = require('path');
 var expressValidator = require('express-validator');
 var connectAssets = require('connect-assets');
+var csrfFreeRoutes = "/api";
 
 module.exports = function (app, passport, config) {
     app.set('port', process.env.PORT || 3000);
@@ -43,11 +44,23 @@ module.exports = function (app, passport, config) {
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(flash());
-    app.use(lusca({
-        csrf: true,
-        xframe: 'SAMEORIGIN',
-        xssProtection: true
-    }));
+    //app.use(lusca({
+    //    csrf: true,
+    //    xframe: 'SAMEORIGIN',
+    //    xssProtection: true
+    //}));
+    app.use(function (req, res, next) {
+        if (_.startsWith(req.path, csrfFreeRoutes)) {
+            next();
+        }
+        else {
+            lusca({
+                csrf: true,
+                xframe: 'SAMEORIGIN',
+                xssProtection: true
+            })(req, res, next);
+        }
+    });
     app.use(function (req, res, next) {
         res.locals.user = req.user; // will make a 'user' variable available in all templates
         next();

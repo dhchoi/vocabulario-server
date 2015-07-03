@@ -11,7 +11,7 @@ module.exports = function (User) {
             }
 
             if (!user) {
-                return done(null, false, {message: 'Email ' + email + ' not found'});
+                return done(null, false, {message: "Email '" + email + "' not found."});
             }
 
             user.comparePassword(password, function (err, isMatch) {
@@ -19,7 +19,7 @@ module.exports = function (User) {
                     return done(null, user);
                 }
                 else {
-                    return done(null, false, {message: 'Invalid email or password.'});
+                    return done(null, false, {message: 'Invalid password.'});
                 }
             });
         });

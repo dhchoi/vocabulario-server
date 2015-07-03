@@ -10,7 +10,7 @@ var app = express();
 
 // configure DB
 mongoose.connect(config.db);
-mongoose.connection.on('error', function() {
+mongoose.connection.on('error', function () {
     console.error('MongoDB Connection Error. Please make sure that MongoDB is running.');
 });
 
@@ -31,7 +31,7 @@ require("./config/express")(app, passport, config);
 require("./config/routes")(app, passport, config);
 
 // start server
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), function () {
     console.log('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
 });
 

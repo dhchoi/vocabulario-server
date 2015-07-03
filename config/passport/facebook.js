@@ -23,7 +23,8 @@ module.exports = function (User, config) {
                     });
                 }
             });
-        } else {
+        }
+        else {
             User.findOne({facebook: profile.id}, function (err, existingUser) {
                 if (existingUser) return done(null, existingUser);
                 User.findOne({email: profile._json.email}, function (err, existingEmailUser) {

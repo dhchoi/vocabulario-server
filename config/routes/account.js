@@ -2,6 +2,7 @@
 
 var router = require("express").Router();
 var User = require('mongoose').model('User');
+var _ = require('lodash');
 var passportConf = require('../middlewares/authorization');
 
 module.exports = function () {
