@@ -10,12 +10,22 @@ module.exports = function (passport, config) {
     router.route("/")
         .all(function (req, res, next) {
             next();
-            console.dir(req);
+            //console.dir(req);
         })
         .get(function (req, res) {
-            res.render('home', {
-                title: 'Home'
-            });
+            //if (req.user) {
+            //    return res.redirect('/account/main'); //TODO: change so that url is to '/'
+            //}
+            if(req.user && req.isAuthenticated()) {
+                res.render('account/main', {
+                    title: 'Main'
+                });
+            }
+            else {
+                res.render('home', {
+                    title: 'Home'
+                });
+            }
         });
 
     router.route("/login")

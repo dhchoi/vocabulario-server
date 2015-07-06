@@ -1,0 +1,58 @@
+extends ../layout
+block content
+    if user.words.length === 0
+        h1 No words added yet!
+        p.lead Start out by adding some new words.
+    else
+        h1 Words List
+        hr
+        .row.word-card-grid
+            each word in user.words
+                .col-sm-3.word-card
+                    h2 #{word.word}
+                    p !{word.definition}
+                    p #{word.created}
+                    p
+                        button.btn.btn-default.btn-delete(data-word="#{word.word}") Delete
+
+    script(src="/js/lib/jquery-2.1.3.min.js")
+    script(src="/js/lib/masonry.pkgd.min.js")
+    script(type='text/javascript').
+        $(document).ready(function () {
+            //- TODO: get masonry working!
+            //-$('.word-card-grid').masonry({
+            //-    itemSelector: '.word-card',
+            //-    columnWidth: 200
+            //-});
+
+            //-var container = document.querySelector('.word-card-grid');
+            //-var msnry = new Masonry(container, {
+            //-    columnWidth: 100,
+            //-    itemSelector: '.word-card'
+            //-});
+
+            $(".word-card .btn-delete").on("click", function () {
+                var $card = $(this).parent().parent();
+                $.ajax({
+                    url: "/api/web/delete",
+                    method: "POST",
+                    data: "word="+$(this).data().word
+                }).done(function (msg) {
+                    if(msg.result) {
+                        $card.remove();
+                    }
+                });
+            });
+            //-$("#btn-add").on("click", function (event) {
+            //-    //-event.preventDefault();
+            //-    $.ajax({
+            //-        url: "/api/web/add",
+            //-        method: "POST",
+            //-        data: "word="+$(this).data().word
+            //-    }).done(function (msg) {
+            //-        if(msg.result) {
+            //-            $card.remove();
+            //-        }
+            //-    });
+            //-});
+        });

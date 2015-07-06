@@ -4,6 +4,14 @@ var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 
+var WordSchema = new mongoose.Schema({
+    word: {type: String, unique: true, lowercase: true},
+    definition: {type: String, default: ''},
+    // TODO: create sentence?
+    // TODO: create star?
+    created: Date
+});
+
 var UserSchema = new mongoose.Schema({
     email: {type: String, unique: true, lowercase: true},
     password: String,
@@ -21,9 +29,12 @@ var UserSchema = new mongoose.Schema({
         picture: {type: String, default: ''}
     },
 
+    words: [WordSchema],
+
     resetPasswordToken: String,
     resetPasswordExpires: Date
 });
+
 
 /**
  * Password hash middleware.
@@ -52,6 +63,53 @@ UserSchema.pre('save', function (next) {
     });
 });
 
+// delete word
+UserSchema.methods.deleteWord = function (wordToDelete, cb) {
+    var wordFound = this.words.filter(function (word) {
+        if (word.word === wordToDelete) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    if(wordFound.length > 0) {
+        console.log("wordFoundId:" + wordFound[0]._id);
+        this.words.id(wordFound[0]._id).remove();
+        this.save(function (err) {
+            if (!err) { // TODO: gotta check if 'word' might interfere with words that have "'"
+                cb(null, {result: true, message: "Delete '" + wordToDelete + "' success."});
+            }
+            else {
+                cb(err);
+            }
+        });
+    }
+    else {
+        cb(null, {result: false, message: "User did not have '" + wordToDelete + "' for deletion."});
+    }
+};
+
+// add word
+UserSchema.methods.addWord = function (wordToAdd, cb) {
+    var user = this;
+    getDefinition(wordToAdd, function (err, result) {
+        user.words.push({ //TODO: it seems like duplicates are going through with no protection
+            word: wordToAdd,
+            definition: err ? "" : result,
+            created: new Date()
+        });
+        user.save(function (err) {
+            if (!err) {
+                cb(null, {result: true, message: "Add '" + wordToAdd + "' success."});
+            }
+            else {
+                res.json(err); // TODO: check if this is the right way (and find something that ends res)
+            }
+        });
+    });
+};
+
 /**
  * Helper method for validating user's password.
  */
@@ -78,5 +136,31 @@ UserSchema.methods.gravatar = function (size) {
     var md5 = crypto.createHash('md5').update(this.email).digest('hex');
     return 'https://gravatar.com/avatar/' + md5 + '?s=' + size + '&d=retro';
 };
+
+
+var phantom = require('phantom');
+function getDefinition(word, cb) {
+    var url = 'http://www.wordreference.com/definition/'+word;
+    phantom.create(function (ph) {
+        ph.createPage(function (page) {
+            page.open(url, function(status) {
+                console.log("status: " + status);
+                page.evaluate(function () {
+                    var element = document.querySelector('.entryRH').innerHTML;
+                    return element;
+                }, function (result) {
+                    ph.exit();
+                    if(result == undefined || result == 'undefined') {
+                        console.log("could not fetch definition");
+                        cb(true, "could not fetch definition");
+                    }
+                    else {
+                        cb(null, result);
+                    }
+                });
+            });
+        });
+    });
+}
 
 module.exports = mongoose.model('User', UserSchema);

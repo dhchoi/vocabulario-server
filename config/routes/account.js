@@ -14,6 +14,14 @@ module.exports = function () {
             });
         });
 
+    router.route("/main")
+        // main page
+        .get(passportConf.isAuthenticated, function (req, res) {
+            res.render('account/main', {
+                title: 'Main'
+            });
+        });
+
     router.route("/profile")
         // update profile information
         .post(passportConf.isAuthenticated, function (req, res, next) {
