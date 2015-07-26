@@ -1,0 +1,117 @@
+<div class="page-header">
+    <h3>Profile Information</h3>
+</div>
+<form class="form-horizontal" action="/account/profile" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrf}}">
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="email">Email</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="email" name="email" id="email" value="{{user.email}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="name">Name</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="name" id="name" value="{{user.profile.name}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="gender">Gender</label>
+        <div class="col-sm-4">
+            <label class="radio col-sm-4">
+                <input type="radio" name="gender" value="male" data-toggle="radio"
+                       {{#compare user.profile.gender "male"}}checked{{/compare}}>
+                <span>Male</span>
+            </label>
+            <label class="radio col-sm-4">
+                <input type="radio" name="gender" value="female" data-toggle="radio"
+                       {{#compare user.profile.gender "female"}}checked{{/compare}}>
+                <span>Female</span>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="location">Location</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="location" id="location" value="{{user.profile.location}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="website">Website</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="text" name="website" id="website" value="{{user.profile.website}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="gravatar">Gravatar</label>
+        <div class="col-sm-4">
+            <img src="{{gravatar user}}" class="profile" width="100" height="100">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-4">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa fa-pencil"></i>
+                Update Profile
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="page-header">
+    <h3>Change Password</h3>
+</div>
+<form class="form-horizontal" action="/account/password" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrf}}">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="password">New Password</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="password" name="password" id="password">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="confirmPassword">Confirm Password</label>
+        <div class="col-sm-4">
+            <input class="form-control" type="password" name="confirmPassword" id="confirmPassword">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-4">
+            <button class="btn btn-primary" type="submit">
+                <i class="fa fa-lock"></i>
+                Change Password
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="page-header">
+    <h3>Delete Account</h3>
+</div>
+<p>You can delete your account, but keep in mind this action is irreversible.</p>
+<form action="/account/delete" method="post">
+    <input type="hidden" name="_csrf" value="{{_csrf}}">
+    <button class="btn btn-danger" type="submit">
+        <i class="fa fa-trash"></i>
+        Delete My Account
+    </button>
+</form>
+
+<div class="page-header">
+    <h3>Linked Accounts</h3>
+</div>
+{{#if user.google}}
+    <p><a class="text-danger" href="/account/unlink/google">Unlink Your Google Account</a></p>
+{{else}}
+    <p><a href="/auth/google">Link Your Google Account</a></p>
+{{/if}}
+{{#if user.facebook}}
+    <p><a class="text-danger" href="/account/unlink/facebook">Unlink Your Facebook Account</a></p>
+{{else}}
+    <p><a href="/auth/facebook">Link Your Facebook Account</a></p>
+{{/if}}
+{{#if user.twitter}}
+    <p><a class="text-danger" href="/account/unlink/twitter">Unlink Your Twitter Account</a></p>
+{{else}}
+    <p><a href="/auth/twitter">Link Your Twitter Account</a></p>
+{{/if}}

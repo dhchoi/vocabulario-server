@@ -1,0 +1,64 @@
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <i class="fa fa-cube"></i>Vocabular.io
+            </a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="contact">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {{#unless user}}
+                    <li {{#compare title "Login"}}class="active"{{/compare}}>
+                        <a href="/login">Login</a>
+                    </li>
+                    <li {{#compare title "Create Account"}}class="active"{{/compare}}>
+                        <a href="/signup">Create Account</a>
+                    </li>
+                {{else}}
+                    <li class="dropdown {{#compare title "Account Management"}}active{{/compare}}">
+                        <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+                            {{#if user.profile.picture}}
+                                <img src="{{user.profile.picture}}">
+                            {{else}}
+                                <img src="{{gravatar user 60}}">
+                            {{/if}}
+                            {{#if user.profile.name}}
+                                {{{user.profile.name}}}
+                            {{else}}{{#if user.email}}
+                                {{{user.email}}}
+                             {{else}}
+                                {{{user.id}}}
+                            {{/if}}{{/if}}
+                            &nbsp;
+                            <i class="caret"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/">Words</a></li>
+                            <li><a href="/account">My Account</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                {{/unless}}
+            </ul>
+            {{#if user}}
+                <form class="navbar-form navbar-right" role="search" method="post" action="/api/web/add">
+                    <input type="hidden" name="_csrf" value="{{_csrf}}">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="word" placeholder="Add word">
+                    </div>
+                    <button id="btn-add" class="btn btn-default" type="submit">Add</button>
+                </form>
+            {{/if}}
+        </div>
+    </div>
+</div>

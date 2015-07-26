@@ -16,17 +16,37 @@ var MongoStore = require('connect-mongo')(session);
 var flash = require('express-flash');
 var path = require('path');
 var expressValidator = require('express-validator');
-var connectAssets = require('connect-assets');
+var connectAssets = require('connect-assets'); //TODO: check prod options
+var exphbs  = require('express-handlebars').create({
+    extname: ".hbs",
+    layoutsDir: "app/views/layouts/",
+    partialsDir: "app/views/partials/",
+    defaultLayout: "main"
+});
+var hbsHelpers = require("./handlebars/helpers");
 var csrfFreeRoutes = "/api";
 
 module.exports = function (app, passport, config) {
+    var env = process.env.NODE_ENV || "development";
+    app.locals.ENV = env;
+    app.locals.ENV_DEVELOPMENT = (env == "development");
+
+    var connectAssetsObj = connectAssets({
+        paths: [
+            path.join(config.root, 'public/css'),
+            path.join(config.root, 'public/js')
+        ]
+    });
+    hbsHelpers.init(exphbs, connectAssetsObj);
+
     app.set('port', process.env.PORT || 3000);
     app.set('views', path.join(config.root, 'app/views'));
-    app.set('view engine', 'jade');
+    //app.set('view engine', 'jade');
+    app.engine('.hbs', exphbs.engine);
+    app.set('view engine', '.hbs');
+
     app.use(compress());
-    app.use(connectAssets({
-        paths: [path.join(config.root, 'public/css'), path.join(config.root, 'public/js')]
-    }));
+    app.use(connectAssetsObj);
     app.use(logger('dev'));
     app.use(favicon(path.join(config.root, 'public/img/favicon.png')));
     app.use(bodyParser.json());
