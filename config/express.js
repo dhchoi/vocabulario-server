@@ -23,6 +23,7 @@ var exphbs  = require('express-handlebars').create({
     partialsDir: "app/views/partials/",
     defaultLayout: "main"
 });
+//var hbsLayouts = require('handlebars-layouts').register(exphbs.handlebars);
 var hbsHelpers = require("./handlebars/helpers");
 var csrfFreeRoutes = "/api";
 
@@ -37,7 +38,7 @@ module.exports = function (app, passport, config) {
             path.join(config.root, 'public/js')
         ]
     });
-    hbsHelpers.init(exphbs, connectAssetsObj);
+    hbsHelpers.init(exphbs.handlebars, connectAssetsObj);
 
     app.set('port', process.env.PORT || 3000);
     app.set('views', path.join(config.root, 'app/views'));

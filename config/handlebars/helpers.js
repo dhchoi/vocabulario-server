@@ -1,31 +1,35 @@
 "use strict";
 
+var hbsExtendBlock = require("./extend-block");
+
 module.exports = {
-    init: function(exphbs, connectAssetsObj) {
-        exphbs.handlebars.registerHelper("css", function () {
+    init: function(hbs, connectAssetsObj) {
+        hbsExtendBlock(hbs);
+
+        hbs.registerHelper("css", function () {
             var css = connectAssetsObj.options.helperContext.css.apply(this, arguments);
-            return new exphbs.handlebars.SafeString(css);
+            return new hbs.SafeString(css);
         });
 
-        exphbs.handlebars.registerHelper("js", function () {
+        hbs.registerHelper("js", function () {
             var js = connectAssetsObj.options.helperContext.js.apply(this, arguments);
-            return new exphbs.handlebars.SafeString(js);
+            return new hbs.SafeString(js);
         });
 
-        exphbs.handlebars.registerHelper("assetPath", function () {
+        hbs.registerHelper("assetPath", function () {
             var assetPath = connectAssetsObj.options.helperContext.assetPath.apply(this, arguments);
-            return new exphbs.handlebars.SafeString(assetPath);
+            return new hbs.SafeString(assetPath);
         });
 
-        exphbs.handlebars.registerHelper("gravatar", function(user, size) {
+        hbs.registerHelper("gravatar", function(user, size) {
             if(typeof size !== "number") {
                 size = undefined;
             }
-            return new exphbs.handlebars.SafeString(user.gravatar(size));
+            return new hbs.SafeString(user.gravatar(size));
         });
 
         //http://doginthehat.com.au/2012/02/comparison-block-helper-for-handlebars-templates/#comment-44
-        exphbs.handlebars.registerHelper("compare", function(lvalue, operator, rvalue, options) {
+        hbs.registerHelper("compare", function(lvalue, operator, rvalue, options) {
             var operators, result;
 
             if (arguments.length < 3) {

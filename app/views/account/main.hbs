@@ -1,3 +1,16 @@
+{{#extend "styles"}}
+<style>
+    {{! TODO: refactor out }}
+    .word-card {
+        padding: 1.5rem;
+        box-shadow: 0 1px 2px #aaa;
+        background: white;
+        margin: 0 1rem 1rem;
+        border-radius: 3px;
+    }
+</style>
+{{/extend}}
+
 {{#unless user.words.length}}
     <h1>No words added yet!</h1>
     <p class="lead">Start out by adding some new words.</p>
@@ -18,7 +31,7 @@
     </div>
 {{/unless}}
 
-<script src="/js/lib/jquery-2.1.3.min.js"></script>
+{{#extend "scripts"}}
 <!--<script src="/js/lib/masonry.pkgd.min.js"></script>-->
 <script>
     $(document).ready(function () {
@@ -59,4 +72,6 @@
         //-    });
         //-});
     });
+    console.log("asdfasdf");
 </script>
+{{/extend}}
