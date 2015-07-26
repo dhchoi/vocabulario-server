@@ -82,7 +82,8 @@ UserSchema.methods.deleteWord = function (wordToDelete, cb) {
                 cb(null, {result: true, message: "Delete '" + wordToDelete + "' success."});
             }
             else {
-                cb(err);
+                console.log(err);
+                cb({result: false, message: "Error while deleting word from database."});
             }
         });
     }
@@ -111,13 +112,14 @@ UserSchema.methods.addWord = function (wordToAdd, cb) {
                 }
                 else {
                     //res.json(err);
-                    cb(err, "Error while saving word definition to database.");
+                    console.log(err);
+                    cb(err, {result: false, message: "Error while saving word definition to database."});
                 }
             });
         }
         else {
             // TODO: check if this is the right way (and find something that ends res)
-            cb(err, result);
+            cb(err, {result: false, message: result});
         }
     });
 };

@@ -47,31 +47,12 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
 
     router.route("/web/add")
         .post(passportConf.isAuthenticated, function (req, res) {
-            if(req.body.word) {
-                req.user.addWord(req.body.word, function(err, message) {
-                    if(err) res.json(message);//return next(err);
-                    else {
-                        // TODO: req.flash('success', {msg: message.message});
-                        res.json(message);
-                    }
-                });
-            }
-            else {
-                res.json({result: message.result, message: "Word to add was not specified."});
-            }
+            addWord(req, res);
         });
     router.route("/add")
         // add word
         .post(passport.authenticate('bearer'), function (req, res) {
-            if(req.body.word) {
-                req.user.addWord(req.body.word, function(err, message) {
-                    if(err) res.json(message);
-                    else res.json(_.pick(message, ["result", "message"]));
-                });
-            }
-            else {
-                res.json({message: "Word to add was not specified."});
-            }
+            addWord(req, res);
         });
 
     router.route("/web/delete")
@@ -108,14 +89,26 @@ var allowCrossDomain = function (req, res, next) {
     }
 };
 
-function deleteWord(req, res) {
+function addWord(req, res) {
     if(req.body.word) {
-        req.user.deleteWord(req.body.word, function(err, message) {
-            if(err) res.json(err);
-            else res.json(message)
+        req.user.addWord(req.body.word, function(err, resultObj) {
+            if(err) res.json(resultObj); //return next(err);
+            else res.json(resultObj); // TODO: req.flash('success', {msg: message.message}); // res.json(_.pick(message, ["result", "message"]));
         });
     }
     else {
-        res.json({message: "Word to delete was not specified."});
+        res.json({result: false, message: "Word to add was not specified."});
+    }
+}
+
+function deleteWord(req, res) {
+    if(req.body.word) {
+        req.user.deleteWord(req.body.word, function(err, resultObj) {
+            if(err) res.json(resultObj);
+            else res.json(resultObj)
+        });
+    }
+    else {
+        res.json({result: false, message: "Word to delete was not specified."});
     }
 }
