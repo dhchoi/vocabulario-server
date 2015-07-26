@@ -95,23 +95,30 @@ UserSchema.methods.deleteWord = function (wordToDelete, cb) {
 UserSchema.methods.addWord = function (wordToAdd, cb) {
     var user = this;
     getDefinition(wordToAdd, function (err, result) {
-        var wordObj = {
-            word: wordToAdd,
-            definition: err ? "" : result,
-            created: new Date()
-        };
-        user.words.push(wordObj);
-        user.save(function (err) {
-            if (!err) {
-                cb(null, _.extend({
-                    result: true,
-                    message: "Add '" + wordToAdd + "' success."
-                }, wordObj));
-            }
-            else {
-                res.json(err); // TODO: check if this is the right way (and find something that ends res)
-            }
-        });
+        if(!err) {
+            var wordObj = {
+                word: wordToAdd,
+                definition: result,
+                created: new Date()
+            };
+            user.words.push(wordObj);
+            user.save(function (err) {
+                if (!err) {
+                    cb(null, _.extend({
+                        result: true,
+                        message: "Add '" + wordToAdd + "' success."
+                    }, wordObj));
+                }
+                else {
+                    //res.json(err);
+                    cb(err, "Error while saving word definition to database.");
+                }
+            });
+        }
+        else {
+            // TODO: check if this is the right way (and find something that ends res)
+            cb(err, result);
+        }
     });
 };
 

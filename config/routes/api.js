@@ -49,7 +49,7 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
         .post(passportConf.isAuthenticated, function (req, res) {
             if(req.body.word) {
                 req.user.addWord(req.body.word, function(err, message) {
-                    if(err) res.json(err);//return next(err);
+                    if(err) res.json(message);//return next(err);
                     else {
                         // TODO: req.flash('success', {msg: message.message});
                         res.json(message);
@@ -65,7 +65,7 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
         .post(passport.authenticate('bearer'), function (req, res) {
             if(req.body.word) {
                 req.user.addWord(req.body.word, function(err, message) {
-                    if(err) res.json(err);
+                    if(err) res.json(message);
                     else res.json(_.pick(message, ["result", "message"]));
                 });
             }
