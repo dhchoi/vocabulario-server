@@ -3,6 +3,7 @@
 var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
+var _ = require('lodash');
 
 var WordSchema = new mongoose.Schema({
     word: {type: String, unique: true, lowercase: true},
@@ -94,14 +95,18 @@ UserSchema.methods.deleteWord = function (wordToDelete, cb) {
 UserSchema.methods.addWord = function (wordToAdd, cb) {
     var user = this;
     getDefinition(wordToAdd, function (err, result) {
-        user.words.push({ //TODO: it seems like duplicates are going through with no protection
+        var wordObj = {
             word: wordToAdd,
             definition: err ? "" : result,
             created: new Date()
-        });
+        };
+        user.words.push(wordObj);
         user.save(function (err) {
             if (!err) {
-                cb(null, {result: true, message: "Add '" + wordToAdd + "' success."});
+                cb(null, _.extend({
+                    result: true,
+                    message: "Add '" + wordToAdd + "' success."
+                }, wordObj));
             }
             else {
                 res.json(err); // TODO: check if this is the right way (and find something that ends res)

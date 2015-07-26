@@ -51,12 +51,12 @@
                 {{/unless}}
             </ul>
             {{#if user}}
-                <form class="navbar-form navbar-right" role="search" method="post" action="/api/web/add">
+                <form class="navbar-form navbar-right form-add-word" role="search" method="post" action="/api/web/add">
                     <input type="hidden" name="_csrf" value="{{_csrf}}">
                     <div class="form-group">
-                        <input class="form-control" type="text" name="word" placeholder="Add word">
+                        <input class="form-control input-add-word" type="text" name="word" placeholder="Add word">
                     </div>
-                    <button id="btn-add" class="btn btn-default" type="submit">Add</button>
+                    <button class="btn btn-default btn-add-word" type="submit">Add</button>
                 </form>
             {{/if}}
         </div>

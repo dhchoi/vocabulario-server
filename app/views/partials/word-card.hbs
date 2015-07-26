@@ -1,0 +1,19 @@
+{{#unless isTemplate}}
+<div class="word-card">
+    <h2>{{word}}</h2>
+    <p>{{{definition}}}</p>
+    <p>{{created}}</p>
+    <p>
+        <button class="btn btn-default btn-delete btn-delete-word" data-word="{{word}}">Delete</button>
+    </p>
+</div>
+{{else}}
+<div class="word-card">
+    <h2>\{{word}}</h2>
+    <p>\{{{definition}}}</p>
+    <p>\{{created}}</p>
+    <p>
+        <button class="btn btn-default btn-delete btn-delete-word" data-word="\{{word}}">Delete</button>
+    </p>
+</div>
+{{/unless}}

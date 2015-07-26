@@ -1,14 +1,5 @@
 {{#extend "styles"}}
-<style>
-    {{! TODO: refactor out }}
-    .word-card {
-        padding: 1.5rem;
-        box-shadow: 0 1px 2px #aaa;
-        background: white;
-        margin: 0 1rem 1rem;
-        border-radius: 3px;
-    }
-</style>
+{{{css "words-main"}}}
 {{/extend}}
 
 {{#unless user.words.length}}
@@ -17,61 +8,23 @@
 {{else}}
     <h1>Words List</h1>
     <hr>
-    <div class="row word-card-grid">
+    <div class="word-card-grid">
+        <div class="grid-sizer"></div>
         {{#each user.words}}
-            <div class="col-sm-3 word-card">
-                <h2>{{word}}</h2>
-                <p>{{{definition}}}</p>
-                <p>{{created}}</p>
-                <p>
-                    <button class="btn btn-default btn-delete" data-word="{{word}}">Delete</button>
-                </p>
+            <div class="grid-item">
+                {{>word-card}}
             </div>
         {{/each}}
     </div>
 {{/unless}}
 
 {{#extend "scripts"}}
-<!--<script src="/js/lib/masonry.pkgd.min.js"></script>-->
-<script>
-    $(document).ready(function () {
-        //- TODO: get masonry working!
-        //-$('.word-card-grid').masonry({
-        //-    itemSelector: '.word-card',
-        //-    columnWidth: 200
-        //-});
-
-        //-var container = document.querySelector('.word-card-grid');
-        //-var msnry = new Masonry(container, {
-        //-    columnWidth: 100,
-        //-    itemSelector: '.word-card'
-        //-});
-
-        $(".word-card .btn-delete").on("click", function () {
-            var $card = $(this).parent().parent();
-            $.ajax({
-                url: "/api/web/delete",
-                method: "POST",
-                data: "word=" + $(this).data().word
-            }).done(function (msg) {
-                if (msg.result) {
-                    $card.remove();
-                }
-            });
-        });
-        //-$("#btn-add").on("click", function (event) {
-        //-    //-event.preventDefault();
-        //-    $.ajax({
-        //-        url: "/api/web/add",
-        //-        method: "POST",
-        //-        data: "word="+$(this).data().word
-        //-    }).done(function (msg) {
-        //-        if(msg.result) {
-        //-            $card.remove();
-        //-        }
-        //-    });
-        //-});
-    });
-    console.log("asdfasdf");
+<script src="//cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+<script id="word-card-template" type="text/x-handlebars-template">
+<div class="grid-item">
+    {{>word-card isTemplate=true}}
+</div>
 </script>
+{{{js "words-main"}}}
 {{/extend}}

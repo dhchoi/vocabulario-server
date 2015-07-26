@@ -51,13 +51,13 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
                 req.user.addWord(req.body.word, function(err, message) {
                     if(err) res.json(err);//return next(err);
                     else {
-                        req.flash('success', {msg: message.message});
-                        res.redirect('/');
+                        // TODO: req.flash('success', {msg: message.message});
+                        res.json(message);
                     }
                 });
             }
             else {
-                res.json({message: "Word to add was not specified."});
+                res.json({result: message.result, message: "Word to add was not specified."});
             }
         });
     router.route("/add")
@@ -66,7 +66,7 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
             if(req.body.word) {
                 req.user.addWord(req.body.word, function(err, message) {
                     if(err) res.json(err);
-                    else res.json(message)
+                    else res.json(_.pick(message, ["result", "message"]));
                 });
             }
             else {
