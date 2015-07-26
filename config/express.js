@@ -41,7 +41,6 @@ module.exports = function (app, passport, config) {
 
     app.set('port', process.env.PORT || 3000);
     app.set('views', path.join(config.root, 'app/views'));
-    //app.set('view engine', 'jade');
     app.engine('.hbs', exphbs.engine);
     app.set('view engine', '.hbs');
 
