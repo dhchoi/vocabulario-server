@@ -1,4 +1,6 @@
 $(window).load(function () {
+    var $btnAddWord = $(".btn-add-word");
+
     var $grid = $('.word-card-grid');
     $grid.masonry({
         itemSelector: '.grid-item',
@@ -7,8 +9,13 @@ $(window).load(function () {
         transitionDuration: 0
     });
 
+    toastr.options = {
+        "positionClass": "toast-bottom-right",
+        "progressBar": true
+    };
+
     $(".btn-delete-word").on("click", deleteWord);
-    $(".btn-add-word").on("click", function(event) {
+    $btnAddWord.on("click", function(event) {
         event.preventDefault();
         addWord();
     });
@@ -20,6 +27,7 @@ $(window).load(function () {
     });
 
     function addWord() {
+        $btnAddWord.button("loading");
         $.ajax({
             url: "/api/web/add",
             method: "POST",
@@ -34,6 +42,7 @@ $(window).load(function () {
             else {
                 toastr.warning(response.message);
             }
+            $btnAddWord.button("reset");
         });
     }
 
