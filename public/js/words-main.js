@@ -1,6 +1,8 @@
 $(window).load(function () {
     var $btnAddWord = $(".btn-add-word");
 
+    initializeBarRating($('.select-confidence-rate'));
+
     var $grid = $('.word-card-grid');
     $grid.masonry({
         itemSelector: '.grid-item',
@@ -36,6 +38,7 @@ $(window).load(function () {
             if (response.result) {
                 var $newWordCard = $(Handlebars.compile($("#word-card-template").html())(response));
                 $newWordCard.find(".btn-delete-word").on("click", deleteWord);
+                initializeBarRating($newWordCard.find(".select-confidence-rate"));
                 $grid.append($newWordCard).masonry("appended", $newWordCard);
                 toastr.success(response.message);
             }
@@ -47,7 +50,7 @@ $(window).load(function () {
     }
 
     function deleteWord() {
-        var $wordCardGridItem = $(this).parent().parent().parent();
+        var $wordCardGridItem = $(this).closest(".grid-item");
         $.ajax({
             url: "/api/web/delete",
             method: "POST",
@@ -59,6 +62,17 @@ $(window).load(function () {
             }
             else {
                 toastr.warning(response.message);
+            }
+        });
+    }
+
+    function initializeBarRating($el) {
+        $el.barrating({
+            theme: 'bars-1to10',
+            showValues: false,
+            showSelectedRating: false,
+            onSelect: function () {
+                console.log("selected!");
             }
         });
     }
