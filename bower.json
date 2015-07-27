@@ -1,0 +1,24 @@
+{
+  "name": "vocabulario-server",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dhchoi/vocabulario-server",
+  "authors": [
+    "Dong Hyun Choi <andy.dh.choi@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "~4.3.0",
+    "bootstrap": "~3.3.5",
+    "bootstrap-social": "~4.9.1",
+    "jquery-bar-rating": "~1.1.1",
+    "jquery": "~2.1.4"
+  }
+}

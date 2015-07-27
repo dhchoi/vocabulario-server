@@ -35,7 +35,8 @@ module.exports = function (app, passport, config) {
     var connectAssetsObj = connectAssets({
         paths: [
             path.join(config.root, 'public/css'),
-            path.join(config.root, 'public/js')
+            path.join(config.root, 'public/js'),
+            path.join(config.root, 'public/')
         ]
     });
     hbsHelpers.init(exphbs.handlebars, connectAssetsObj);
