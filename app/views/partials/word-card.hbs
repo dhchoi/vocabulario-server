@@ -1,33 +1,49 @@
 {{#unless isTemplate}}
 <div class="word-card">
+  <div class="card-content">
     <h2>{{word}}</h2>
     <p>{{{definition}}}</p>
     <p>{{created}}</p>
-    <p>
-        <button class="btn btn-default btn-delete btn-delete-word" data-word="{{word}}"><i class="fa fa-trash"></i>Delete</button>
-    </p>
+  </div>
+  <div class="card-control">
+    <i class="fa fa-bars"></i>
+  </div>
+  <div class="card-actions">
     <select class="select-confidence-rate">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
     </select>
+    <button class="btn btn-default btn-delete-word" data-word="{{word}}"><i class="fa fa-trash"></i></button>
+    <button class="btn btn-default btn-star-word" data-word="{{word}}"><i class="fa fa-star"></i></button>
+    <button class="btn btn-default btn-confirm-rate" data-word="{{word}}"><i class="fa fa-check"></i></button>
+  </div>
+  <div class="clearfix"></div>
 </div>
 {{else}}
 <div class="word-card">
+  <div class="card-content">
     <h2>\{{word}}</h2>
     <p>\{{{definition}}}</p>
     <p>\{{created}}</p>
-    <p>
-        <button class="btn btn-default btn-delete btn-delete-word" data-word="\{{word}}"><i class="fa fa-trash"></i>Delete</button>
-    </p>
+  </div>
+  <div class="card-control">
+    <i class="fa fa-bars"></i>
+  </div>
+  <div class="card-actions">
     <select class="select-confidence-rate">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
     </select>
+    <button class="btn btn-default btn-delete-word" data-word="\{{word}}"><i class="fa fa-trash"></i></button>
+    <button class="btn btn-default btn-star-word" data-word="\{{word}}"><i class="fa fa-star"></i></button>
+    <button class="btn btn-default btn-confirm-rate" data-word="\{{word}}"><i class="fa fa-check"></i></button>
+  </div>
+  <div class="clearfix"></div>
 </div>
 {{/unless}}

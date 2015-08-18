@@ -1,0 +1,38 @@
+@gray-color: #6f6f6f;
+
+.br-theme-bars-1to10 {
+
+  .br-widget {
+    height: 100%;
+
+    a {
+      display: block;
+      width: 22px;
+      padding: 5px 0;
+      height: 22px;
+      float: left;
+      background-color: lighten(@gray-color, 50%);
+      margin: 1px;
+      text-align: center;
+
+      &.br-active,
+      &.br-selected {
+        background-color: @gray-color;
+      }
+    }
+
+    .br-current-rating {
+      font-size: 20px;
+      line-height: 2;
+      float: left;
+      padding: 0 20px 0 20px;
+      color: @gray-color;
+      font-weight: 400;
+    }
+  }
+}
+
+.br-wrapper.br-theme-bars-1to10 {
+  float: left;
+  padding: 7px 0;
+}
