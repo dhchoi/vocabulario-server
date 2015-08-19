@@ -14,7 +14,7 @@ $(window).load(function () {
     "progressBar": true
   };
 
-  $(".word-card").each(function(index, value) {
+  $(".word-card").each(function (index, value) {
     initializeCard($(value));
   });
 
