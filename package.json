@@ -8,6 +8,7 @@
     "url": "https://github.com/dhchoi/vocabulario-server.git"
   },
   "scripts": {
+    "setup": "npm install && npm install -g phantomjs && bower install",
     "start": "nodemon app.js",
     "test": "mocha"
   },
