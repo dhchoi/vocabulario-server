@@ -8,8 +8,9 @@ var _ = require('lodash');
 var WordSchema = new mongoose.Schema({
     word: {type: String, unique: true, lowercase: true},
     definition: {type: String, default: ''},
-    // TODO: create sentence?
-    // TODO: create star?
+    sentence: {type: String, default: ''},
+    rating: {type: Number, default: 1, min: 1, max: 5},
+    starred: {type: Boolean, default: false},
     created: Date
 });
 
@@ -75,7 +76,7 @@ UserSchema.methods.deleteWord = function (wordToDelete, cb) {
     });
 
     if(wordFound.length > 0) {
-        console.log("wordFoundId:" + wordFound[0]._id);
+        console.log("wordFoundId: " + wordFound[0]._id);
         this.words.id(wordFound[0]._id).remove();
         this.save(function (err) {
             if (!err) { // TODO: gotta check if 'word' might interfere with words that have "'"
@@ -83,13 +84,50 @@ UserSchema.methods.deleteWord = function (wordToDelete, cb) {
             }
             else {
                 console.log(err);
-                cb({result: false, message: "Error while deleting word from database."});
+                cb(err, {
+                  result: false,
+                  message: "Error while deleting word from database."
+                });
             }
         });
     }
     else {
         cb(null, {result: false, message: "User did not have '" + wordToDelete + "' for deletion."});
     }
+};
+
+// toggle starred for word
+UserSchema.methods.toggleStarred = function (wordToToggle, starred, cb) {
+  var wordFound = this.words.filter(function (word) {
+    if (word.word === wordToToggle) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  if(wordFound.length > 0) {
+    console.log("wordFoundId: " + wordFound[0]._id);
+    this.words.id(wordFound[0]._id).starred = starred;
+    this.save(function (err) {
+      if (!err) {
+        cb(null, {
+          result: true,
+          message: "Setting starred to '" + starred + "' success."
+        });
+      }
+      else {
+        console.log(err);
+        cb(err, {
+          result: false,
+          message: "Error while saving starred field of word to database."
+        });
+      }
+    });
+  }
+  else {
+    cb(null, {result: false, message: "User did not have '" + wordToToggle + "' for toggling starred."});
+  }
 };
 
 // add word
@@ -113,7 +151,10 @@ UserSchema.methods.addWord = function (wordToAdd, cb) {
                 else {
                     //res.json(err);
                     console.log(err);
-                    cb(err, {result: false, message: "Error while saving word definition to database."});
+                    cb(err, {
+                      result: false,
+                      message: "Error while saving word definition to database."
+                    });
                 }
             });
         }

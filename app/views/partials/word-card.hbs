@@ -17,7 +17,7 @@
       <option value="5">5</option>
     </select>
     <button class="btn btn-default btn-delete-word" data-word="{{word}}"><i class="fa fa-trash"></i></button>
-    <button class="btn btn-default btn-star-word" data-word="{{word}}"><i class="fa fa-star"></i></button>
+    <button class="btn btn-default btn-star-word" data-word="{{word}}"><i class="fa fa-star{{#if starred}} starred{{/if}}"></i></button>
     <button class="btn btn-default btn-confirm-rate" data-word="{{word}}"><i class="fa fa-check"></i></button>
   </div>
   <div class="clearfix"></div>

@@ -67,7 +67,20 @@ $(window).load(function () {
   }
 
   function starWord() {
-    $(this).find("i").toggleClass("starred");
+    var $i = $(this).find("i");
+    $.ajax({
+      url: "/api/web/toggle-starred",
+      method: "POST",
+      data: "word=" + $(this).data().word + "&starred=" + !$i.hasClass("starred")
+    }).done(function (response) {
+      if (response.result) {
+        $i.toggleClass("starred");
+        toastr.success(response.message);
+      }
+      else {
+        toastr.warning(response.message);
+      }
+    });
   }
 
   function confirmRate() {

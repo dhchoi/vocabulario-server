@@ -65,6 +65,15 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
             deleteWord(req, res);
         });
 
+    router.route("/web/toggle-starred")
+      .post(passportConf.isAuthenticated, function (req, res) {
+        toggleStarred(req, res);
+      });
+    router.route("/toggle-starred")
+      .post(passport.authenticate('bearer'), function (req, res) {
+        toggleStarred(req, res);
+      });
+
     router.route("/get")
         .get(passport.authenticate('bearer'), function (req, res) {
             res.json(req.user.words);
@@ -111,4 +120,16 @@ function deleteWord(req, res) {
     else {
         res.json({result: false, message: "Word to delete was not specified."});
     }
+}
+
+function toggleStarred(req, res) {
+  if(req.body.word) {
+    req.user.toggleStarred(req.body.word, req.body.starred, function(err, resultObj) {
+      if(err) res.json(resultObj);
+      else res.json(resultObj)
+    });
+  }
+  else {
+    res.json({result: false, message: "Word to toggle starred was not specified."});
+  }
 }
