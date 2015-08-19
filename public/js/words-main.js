@@ -1,8 +1,6 @@
 $(window).load(function () {
   var $btnAddWord = $(".btn-add-word");
 
-  initializeBarRating($('.select-confidence-rate'));
-
   var $grid = $('.word-card-grid');
   $grid.masonry({
     itemSelector: '.grid-item',
@@ -11,34 +9,15 @@ $(window).load(function () {
     transitionDuration: 0
   });
 
-  $(".card-control").on("click", function () {
-    var $this = $(this);
-    var $i = $this.find("i");
-    if($i.hasClass("fa-bars")) {
-      $i.removeClass("fa-bars");
-      $i.addClass("fa-times");
-    }
-    else {
-      $i.addClass("fa-bars");
-      $i.removeClass("fa-times");
-    }
-    var $cardActions = $this.parent().find(".card-actions");
-    $cardActions.slideToggle({
-      duration: "fast",
-      progress: function () {
-        $grid.masonry('layout');
-      }
-    });
-  });
-
   toastr.options = {
     "positionClass": "toast-bottom-right",
     "progressBar": true
   };
 
-  $(".btn-star-word").on("click", starWord);
-  $(".btn-confirm-rate").on("click", confirmRate);
-  $(".btn-delete-word").on("click", deleteWord);
+  $(".word-card").each(function(index, value) {
+    initializeCard($(value));
+  });
+
   $btnAddWord.on("click", function (event) {
     event.preventDefault();
     addWord();
@@ -59,8 +38,7 @@ $(window).load(function () {
     }).done(function (response) {
       if (response.result) {
         var $newWordCard = $(Handlebars.compile($("#word-card-template").html())(response));
-        $newWordCard.find(".btn-delete-word").on("click", deleteWord);
-        initializeBarRating($newWordCard.find(".select-confidence-rate"));
+        initializeCard($newWordCard);
         $grid.append($newWordCard).masonry("appended", $newWordCard);
         toastr.success(response.message);
       }
@@ -88,8 +66,31 @@ $(window).load(function () {
     });
   }
 
-  function initializeBarRating($el) {
-    $el.barrating({
+  function starWord() {
+    $(this).find("i").toggleClass("starred");
+  }
+
+  function confirmRate() {
+    $(this).hide();
+  }
+
+  function toggleActions() {
+    var $this = $(this);
+    $this.find("i").toggleClass("fa-bars").toggleClass("fa-times");
+    $this.parent().find(".card-actions").slideToggle({
+      duration: "fast",
+      progress: function () {
+        $grid.masonry('layout');
+      }
+    });
+  }
+
+  function initializeCard($card) {
+    $card.on("click", ".btn-star-word", starWord);
+    $card.on("click", ".btn-confirm-rate", confirmRate);
+    $card.on("click", ".btn-delete-word", deleteWord);
+    $card.on("click", ".card-control", toggleActions);
+    $card.find(".select-rate").barrating({
       theme: 'bars-1to10',
       showValues: false,
       showSelectedRating: false,
@@ -97,13 +98,5 @@ $(window).load(function () {
         $(this).closest(".card-actions").find(".btn-confirm-rate").show();
       }
     });
-  }
-
-  function starWord() {
-    $(this).find("i").toggleClass("starred");
-  }
-
-  function confirmRate() {
-    $(this).hide();
   }
 });
