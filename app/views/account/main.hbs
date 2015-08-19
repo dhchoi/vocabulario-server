@@ -3,21 +3,24 @@
 {{{css "words-main"}}}
 {{/extend}}
 
-{{#unless user.words.length}}
-    <h1>No words added yet!</h1>
-    <p class="lead">Start out by adding some new words.</p>
-{{else}}
-    <h1>Words List</h1>
-    <hr>
-    <div class="word-card-grid">
-        <div class="grid-sizer"></div>
+
+<h1>Words List</h1>
+<hr>
+<div class="word-card-grid">
+    <div class="grid-sizer"></div>
+    {{#unless user.words.length}}
+        <div class="empty-notice">
+            <h2>No words have been added yet!</h2>
+            <p class="lead">Start out by adding some new words.</p>
+        </div>
+    {{else}}
         {{#each user.words}}
             <div class="grid-item">
                 {{>word-card}}
             </div>
         {{/each}}
-    </div>
-{{/unless}}
+    {{/unless}}
+</div>
 
 {{#extend "scripts"}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>

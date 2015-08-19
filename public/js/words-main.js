@@ -1,5 +1,6 @@
 $(window).load(function () {
   var $btnAddWord = $(".btn-add-word");
+  var $emptyNotice = $(".empty-notice");
 
   var $grid = $('.word-card-grid');
   $grid.masonry({
@@ -37,6 +38,7 @@ $(window).load(function () {
       data: "word=" + $(".input-add-word").val()
     }).done(function (response) {
       if (response.result) {
+        if($emptyNotice) { $emptyNotice.remove(); }
         var $newWordCard = $(Handlebars.compile($("#word-card-template").html())(response));
         initializeCard($newWordCard);
         $grid.append($newWordCard).masonry("appended", $newWordCard);
