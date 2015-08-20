@@ -5,6 +5,7 @@ var async = require('async');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var User = require('mongoose').model('User');
+var passportConf = require('../middlewares/authorization');
 
 module.exports = function (passport, config) {
   router.route("/")
@@ -13,11 +14,8 @@ module.exports = function (passport, config) {
       //console.dir(req);
     })
     .get(function (req, res) {
-      //if (req.user) {
-      //    return res.redirect('/account/main'); //TODO: change so that url is to '/'
-      //}
       if (req.user && req.isAuthenticated()) {
-        res.render('account/main', {
+        res.render('words/list', {
           title: 'Main',
           words: req.user.getWords()
         });
@@ -27,6 +25,20 @@ module.exports = function (passport, config) {
           title: 'Home'
         });
       }
+    });
+
+  router.route("/word")
+    .get(function (req, res) {
+      return res.redirect('/');
+    });
+
+  router.route("/word/:word")
+    .get(passportConf.isAuthenticated, function (req, res) {
+      var word = req.params.word;
+      res.render('words/progress', {
+        title: 'Progress - ' + word,
+        word: req.user.getWord(word)
+      });
     });
 
   router.route("/login")

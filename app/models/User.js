@@ -151,6 +151,15 @@ UserSchema.methods.addWord = function (wordToAdd, cb) {
   });
 };
 
+UserSchema.methods.getWord = function (word) {
+  var wordFound = Word.search(this.words, word)
+  if(wordFound) {
+    return formatWord(wordFound._doc);
+  }
+
+  return null;
+};
+
 UserSchema.methods.getWords = function (filter) {
   if(!filter) {
     return this.words.map(formatWord);

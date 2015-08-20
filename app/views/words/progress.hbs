@@ -1,0 +1,23 @@
+{{#extend "styles"}}
+{{{css "progress-main"}}}
+{{/extend}}
+
+{{#if word}}
+<h1>{{word.word}}</h1>
+<hr>
+<h2>Confidence Rate</h2>
+<canvas class="chart"></canvas>
+{{else}}
+<h1>Non-existing word!</h1>
+<hr>
+<p class="lead">It seems that you haven't added that word yet.</p>
+{{/if}}
+
+{{#extend "scripts"}}
+<script>
+//var d = JSON.stringify();
+console.log({{{word.ratings}}});
+</script>
+{{{js "bower_components/Chart.js/Chart.min"}}}
+{{{js "progress-main"}}}
+{{/extend}}
