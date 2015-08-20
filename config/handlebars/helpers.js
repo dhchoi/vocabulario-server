@@ -21,6 +21,10 @@ module.exports = {
       return new hbs.SafeString(assetPath);
     });
 
+    hbs.registerHelper("json", function (context) {
+      return JSON.stringify(context);
+    });
+
     hbs.registerHelper("gravatar", function (user, size) {
       if (typeof size !== "number") {
         size = undefined;
