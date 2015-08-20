@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 {{{css "words-main"}}}
 {{/extend}}
-
 <h1>Words List</h1>
 <hr>
 <div class="word-card-grid">
@@ -21,10 +20,25 @@
     {{/unless}}
 </div>
 
+<div ng-app="MyApp" ng-controller="MyCtrl">
+    <select ng-model="sortType">
+        <option value="">-- sort type --</option>
+        <option value="word">word</option>
+        <option value="created">created</option>
+    </select>
+    <input ng-model="query" type="text" placeholder="Filter by">
+    <p>Num words: {[{(words | filter:query).length}]} <span ng-show="query.length"> matching {[{ query }]}</span></p>
+    <div ng-repeat="w in words | orderBy:sortType | filter:query">
+        <div word-card class="asdf"></div>
+    </div>
+</div>
+
 {{#extend "scripts"}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/masonry/3.3.1/masonry.pkgd.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.js"></script>
 <script id="word-card-template" type="text/x-handlebars-template">
 <div class="grid-item">
     {{>word-card isTemplate=true}}
@@ -32,4 +46,34 @@
 </script>
 {{{js "bower_components/jquery-bar-rating/dist/jquery.barrating.min"}}}
 {{{js "words-main"}}}
+<script>
+//$(window).load(function () {
+var app = angular.module("MyApp", ['ngSanitize']);
+
+app.config(function ($interpolateProvider) {
+    $interpolateProvider.startSymbol('{[{');
+    $interpolateProvider.endSymbol('}]}');
+});
+
+app.directive("wordCard", ['$document', function ($document) {
+    return {
+        restrict: "A",
+        link: function (scope, element, attrs) {
+            var a = element.find("a");
+            console.log(a);
+            a.on("click", function () {
+               console.log("ccc");
+            });
+        },
+        templateUrl: "templates/word-card.html"
+    };
+}]);
+
+app.controller("MyCtrl", ['$scope', function ($scope) {
+    $scope.words = {{{json words}}};
+    $scope.sortType = '';
+    $scope.query = '';
+}]);
+//});
+</script>
 {{/extend}}
