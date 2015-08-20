@@ -118,7 +118,7 @@ $(window).load(function () {
     $card.on("click", ".btn-star-word", starWord);
     $card.on("click", ".btn-rate-word", rateWord);
     $card.on("click", ".btn-delete-word", deleteWord);
-    $card.on("click", ".card-control", toggleActions);
+    $card.on("click", ".btn-toggle-actions", toggleActions);
     $card.find(".select-rate").barrating({
       theme: 'bars-1to10',
       showValues: false,
