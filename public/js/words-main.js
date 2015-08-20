@@ -10,6 +10,38 @@ $(window).load(function () {
     transitionDuration: 0
   });
 
+  $(".search").keyup(function () {
+    var filter = {
+      field: ".word",
+      match: $(this).val(),
+      evaluate: function (value) {
+        return value.search(new RegExp(this.match, "i")) < 0;
+      }
+    };
+    filterWordCards(filter);
+  });
+
+  function filterWordCards(filter) {
+    $grid.children(".grid-item").each(function () {
+      var value = $(this).find(filter.field).text();
+      if (filter.evaluate(value)) {
+        $(this).fadeOut("fast", function () {
+          $grid.masonry('layout');
+        });
+      }
+      else {
+        $(this).fadeIn("fast", function () {
+          $grid.masonry('layout');
+        });
+      }
+    });
+  };
+
+  $(".filters").find(".filter-by").on("click", function () {
+    console.log($(this).data("filter-by"));
+    $(this).toggleClass("selected");
+  });
+
   toastr.options = {
     "positionClass": "toast-bottom-right",
     "progressBar": true
@@ -69,14 +101,14 @@ $(window).load(function () {
   }
 
   function starWord() {
-    var $i = $(this).find("i");
+    var $this = $(this);
     $.ajax({
       url: "/api/web/toggle-starred",
       method: "POST",
       data: "word=" + $(this).data().word
     }).done(function (response) {
       if (response.result) {
-        $i.toggleClass("starred");
+        $this.toggleClass("starred");
         toastr.success(response.message);
       }
       else {

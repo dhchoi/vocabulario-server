@@ -1,8 +1,34 @@
 @import "words-rating";
 
+.fa {
+  margin: 0;
+}
+
 .grid-sizer,
 .grid-item {
   width: 33%;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  margin-top: 18px;
+  margin-bottom: 9px;
+
+  .search {
+    width: inherit;
+    margin: 0 10px;
+  }
+
+  .btn-toolbar {
+    display: inline-block;
+    margin: 0 10px;
+  }
+
+  .selected {
+    background-color: #0000f6;
+    color: #fff;
+  }
 }
 
 .word-card {
@@ -45,15 +71,8 @@
     }
 
     .starred {
-      color: #ffff00;
+      background-color: #ffff00;
     }
   }
-
-  .fa {
-    margin: 0;
-  }
 }
 
-.clearfix {
-  clear: both;
-}

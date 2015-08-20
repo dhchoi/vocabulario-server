@@ -1,9 +1,9 @@
 {{#unless isTemplate}}
 <div class="word-card">
   <div class="card-content">
-    <h2><a href="/word/{{word}}">{{word}}</a></h2>
-    <p>{{{definition}}}</p>
-    <p>{{created}}</p>
+    <h2 class="word"><a href="/word/{{word}}">{{word}}</a></h2>
+    <p class="definition">{{{definition}}}</p>
+    <p class="created">{{created}}</p>
   </div>
   <div class="btn-toggle-actions">
     <i class="fa fa-bars"></i>
@@ -17,7 +17,7 @@
       <option value="5"{{#compare currentRate 5}} selected="selected"{{/compare}}>5</option>
     </select>
     <button class="btn btn-default btn-delete-word" data-word="{{word}}"><i class="fa fa-trash"></i></button>
-    <button class="btn btn-default btn-star-word" data-word="{{word}}"><i class="fa fa-star{{#if starred}} starred{{/if}}"></i></button>
+    <button class="btn btn-default btn-star-word{{#if starred}} starred{{/if}}" data-word="{{word}}"><i class="fa fa-star"></i></button>
     <button class="btn btn-default btn-rate-word" data-word="{{word}}"><i class="fa fa-check"></i></button>
   </div>
   <div class="clearfix"></div>
@@ -25,9 +25,9 @@
 {{else}}
 <div class="word-card">
   <div class="card-content">
-    <h2>\{{word}}</h2>
-    <p>\{{{definition}}}</p>
-    <p>\{{created}}</p>
+      <h2 class="word"><a href="/word/\{{word}}">\{{word}}</a></h2>
+      <p class="definition">\{{{definition}}}</p>
+      <p class="created">\{{created}}</p>
   </div>
   <div class="btn-toggle-actions">
     <i class="fa fa-bars"></i>
@@ -41,7 +41,7 @@
       <option value="5">5</option>
     </select>
     <button class="btn btn-default btn-delete-word" data-word="\{{word}}"><i class="fa fa-trash"></i></button>
-    <button class="btn btn-default btn-star-word" data-word="\{{word}}"><i class="fa fa-star"></i></button>
+    <button class="btn btn-default btn-star-word\{{#if starred}} starred\{{/if}}" data-word="\{{word}}"><i class="fa fa-star"></i></button>
     <button class="btn btn-default btn-rate-word" data-word="\{{word}}"><i class="fa fa-check"></i></button>
   </div>
   <div class="clearfix"></div>
