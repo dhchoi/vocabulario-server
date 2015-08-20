@@ -18,7 +18,8 @@ module.exports = function (passport, config) {
       //}
       if (req.user && req.isAuthenticated()) {
         res.render('account/main', {
-          title: 'Main'
+          title: 'Main',
+          words: req.user.getWords()
         });
       }
       else {

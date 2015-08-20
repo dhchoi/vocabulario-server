@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
+var moment = require("moment");
 var Word = require("./Word");
 var dictionary = require("../helpers/dictionary");
 
@@ -128,7 +129,7 @@ UserSchema.methods.addWord = function (wordToAdd, cb) {
           cb(null, _.extend({
             result: true,
             message: "Add '" + wordToAdd + "' success."
-          }, newWord._doc));
+          }, formatWord(newWord._doc)));
         }
         else {
           //res.json(err);
@@ -149,6 +150,43 @@ UserSchema.methods.addWord = function (wordToAdd, cb) {
     }
   });
 };
+
+UserSchema.methods.getWords = function (filter) {
+  if(!filter) {
+    return this.words.map(formatWord);
+  }
+
+  var filteredWords = this.words.filter(function (word) {
+    if (word[filter.key] === filter.value) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  return filteredWords.map(formatWord);
+};
+
+function formatWord(word) {
+  return {
+    word: word.word,
+    definition: word.definition,
+    sentence: word.sentence,
+    ratings: word.ratings.map(function (rating) {
+      return {
+        rate: rating.rate,
+        saved: formatDate(rating.saved)
+      }
+    }),
+    currentRate: word.currentRate,
+    starred: word.starred,
+    created: formatDate(word.created)
+  };
+}
+
+function formatDate(date) {
+  return moment(date).format("MMMM Do YYYY, h:mm a");
+}
 
 function updateWord(user, word, action, cb) {
   var wordFound = Word.search(user.words, word);

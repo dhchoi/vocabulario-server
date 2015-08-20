@@ -8,13 +8,13 @@
 <hr>
 <div class="word-card-grid">
     <div class="grid-sizer"></div>
-    {{#unless user.words.length}}
+    {{#unless words.length}}
         <div class="empty-notice">
             <h2>No words have been added yet!</h2>
             <p class="lead">Start out by adding some new words.</p>
         </div>
     {{else}}
-        {{#each user.words}}
+        {{#each words}}
             <div class="grid-item">
                 {{>word-card}}
             </div>
