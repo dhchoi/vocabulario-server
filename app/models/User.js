@@ -4,15 +4,8 @@ var bcrypt = require('bcrypt-nodejs');
 var crypto = require('crypto');
 var mongoose = require('mongoose');
 var _ = require('lodash');
-
-var WordSchema = new mongoose.Schema({
-  word: {type: String, unique: true, lowercase: true},
-  definition: {type: String, default: ''},
-  sentence: {type: String, default: ''},
-  rating: {type: Number, default: 1, min: 1, max: 5},
-  starred: {type: Boolean, default: false},
-  created: Date
-});
+var Word = require("./Word");
+var dictionary = require("../helpers/dictionary");
 
 var UserSchema = new mongoose.Schema({
   email: {type: String, unique: true, lowercase: true},
@@ -31,7 +24,7 @@ var UserSchema = new mongoose.Schema({
     picture: {type: String, default: ''}
   },
 
-  words: [WordSchema],
+  words: [Word.schema],
 
   resetPasswordToken: String,
   resetPasswordExpires: Date
@@ -65,105 +58,6 @@ UserSchema.pre('save', function (next) {
   });
 });
 
-// delete word
-UserSchema.methods.deleteWord = function (wordToDelete, cb) {
-  var wordFound = this.words.filter(function (word) {
-    if (word.word === wordToDelete) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  if (wordFound.length > 0) {
-    console.log("wordFoundId: " + wordFound[0]._id);
-    this.words.id(wordFound[0]._id).remove();
-    this.save(function (err) {
-      if (!err) { // TODO: gotta check if 'word' might interfere with words that have "'"
-        cb(null, {result: true, message: "Delete '" + wordToDelete + "' success."});
-      }
-      else {
-        console.log(err);
-        cb(err, {
-          result: false,
-          message: "Error while deleting word from database."
-        });
-      }
-    });
-  }
-  else {
-    cb(null, {result: false, message: "User did not have '" + wordToDelete + "' for deletion."});
-  }
-};
-
-// toggle starred for word
-UserSchema.methods.toggleStarred = function (wordToToggle, starred, cb) {
-  var wordFound = this.words.filter(function (word) {
-    if (word.word === wordToToggle) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  if (wordFound.length > 0) {
-    console.log("wordFoundId: " + wordFound[0]._id);
-    this.words.id(wordFound[0]._id).starred = starred;
-    this.save(function (err) {
-      if (!err) {
-        cb(null, {
-          result: true,
-          message: "Setting starred to '" + starred + "' success."
-        });
-      }
-      else {
-        console.log(err);
-        cb(err, {
-          result: false,
-          message: "Error while saving starred field of word to database."
-        });
-      }
-    });
-  }
-  else {
-    cb(null, {result: false, message: "User did not have '" + wordToToggle + "' for toggling starred."});
-  }
-};
-
-// add word
-UserSchema.methods.addWord = function (wordToAdd, cb) {
-  var user = this;
-  getDefinition(wordToAdd, function (err, result) {
-    if (!err) {
-      var wordObj = {
-        word: wordToAdd,
-        definition: result,
-        created: new Date()
-      };
-      user.words.push(wordObj);
-      user.save(function (err) {
-        if (!err) {
-          cb(null, _.extend({
-            result: true,
-            message: "Add '" + wordToAdd + "' success."
-          }, wordObj));
-        }
-        else {
-          //res.json(err);
-          console.log(err);
-          cb(err, {
-            result: false,
-            message: "Error while saving word definition to database."
-          });
-        }
-      });
-    }
-    else {
-      // TODO: check if this is the right way (and find something that ends res)
-      cb(err, {result: false, message: result});
-    }
-  });
-};
 
 /**
  * Helper method for validating user's password.
@@ -192,30 +86,108 @@ UserSchema.methods.gravatar = function (size) {
   return 'https://gravatar.com/avatar/' + md5 + '?s=' + size + '&d=retro';
 };
 
+// delete word
+UserSchema.methods.deleteWord = function (word, cb) {
+  updateWord(this, word,
+    function (wordFound) {
+      wordFound.remove();
+    },
+    cb
+  );
+};
 
-var phantom = require('phantom');
-function getDefinition(word, cb) {
-  var url = 'http://www.wordreference.com/definition/' + word;
-  phantom.create(function (ph) {
-    ph.createPage(function (page) {
-      page.open(url, function (status) {
-        console.log("status: " + status);
-        page.evaluate(function () {
-          var element = document.querySelector('.entryRH').innerHTML;
-          return element;
-        }, function (result) {
-          ph.exit();
-          if (result == undefined || result == 'undefined') {
-            console.log("could not fetch definition");
-            cb(true, "could not fetch definition");
-          }
-          else {
-            cb(null, result);
-          }
-        });
+// toggle starred for word
+UserSchema.methods.toggleStarred = function (word, cb) {
+  updateWord(this, word,
+    function (wordFound) {
+      wordFound.toggleStarred();
+    },
+    cb
+  );
+};
+
+// add rating for word
+UserSchema.methods.addRating = function (word, rating, cb) {
+  updateWord(this, word,
+    function (wordFound) {
+      wordFound.addRating(rating);
+    },
+    cb
+  );
+};
+
+// add word
+UserSchema.methods.addWord = function (wordToAdd, cb) {
+  var user = this;
+  dictionary.getDefinition(wordToAdd, function (err, result) {
+    if (!err) {
+      var newWord = createWord(wordToAdd, result, new Date());
+      user.words.push(newWord);
+      user.save(function (err) {
+        if (!err) {
+          cb(null, _.extend({
+            result: true,
+            message: "Add '" + wordToAdd + "' success."
+          }, newWord._doc));
+        }
+        else {
+          //res.json(err);
+          console.log(err);
+          cb(err, {
+            result: false,
+            message: "Error while saving word definition to database."
+          });
+        }
       });
-    });
+    }
+    else {
+      // TODO: check if this is the right way (and find something that ends res)
+      cb(err, {
+        result: false,
+        message: result
+      });
+    }
   });
+};
+
+function updateWord(user, word, action, cb) {
+  var wordFound = Word.search(user.words, word);
+  if (wordFound) {
+    action(wordFound);
+    user.save(function (err) {
+      if (!err) { // TODO: gotta check if 'word' might interfere with words that have "'"
+        cb(null, {
+          result: true,
+          message: "Finished updating '" + wordFound.word + "'."
+        });
+      }
+      else {
+        console.log(err);
+        cb(err, {
+          result: false,
+          message: "Failed to update '" + wordFound.word + "'."
+        });
+      }
+    });
+  }
+  else {
+    cb(null, {
+      result: false,
+      message: "The user does not have the word '" + word + "'."
+    });
+  }
+}
+
+function createWord(word, definition, date) {
+  // TODO: check field defaults (such as first rating)
+  var newWord = new Word({
+    word: word,
+    definition: definition,
+    created: date
+  });
+  newWord.addRating(1, date);
+
+  return newWord;
 }
 
 module.exports = mongoose.model('User', UserSchema);

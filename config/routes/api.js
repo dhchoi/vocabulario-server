@@ -1,7 +1,6 @@
 "use strict";
 
 var router = require("express").Router();
-var User = require('mongoose').model('User');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
 var passportConf = require('../middlewares/authorization');
@@ -74,6 +73,15 @@ module.exports = function (passport, config) { //TODO: normalize all api respons
       toggleStarred(req, res);
     });
 
+  router.route("/web/rate")
+    .post(passportConf.isAuthenticated, function (req, res) {
+      addRating(req, res);
+    });
+  router.route("/rate")
+    .post(passport.authenticate('bearer'), function (req, res) {
+      addRating(req, res);
+    });
+
   router.route("/get")
     .get(passport.authenticate('bearer'), function (req, res) {
       res.json(req.user.words);
@@ -123,13 +131,25 @@ function deleteWord(req, res) {
 }
 
 function toggleStarred(req, res) {
-  if (req.body.word) {
-    req.user.toggleStarred(req.body.word, req.body.starred, function (err, resultObj) {
+  if (req.body.word != undefined) {
+    req.user.toggleStarred(req.body.word, function (err, resultObj) {
       if (err) res.json(resultObj);
       else res.json(resultObj)
     });
   }
   else {
-    res.json({result: false, message: "Word to toggle starred was not specified."});
+    res.json({result: false, message: "Insufficient arguments for toggling word starred."});
+  }
+}
+
+function addRating(req, res) {
+  if (req.body.word != undefined && req.body.rating != undefined) {
+    req.user.addRating(req.body.word, req.body.rating, function (err, resultObj) {
+      if (err) res.json(resultObj);
+      else res.json(resultObj)
+    });
+  }
+  else {
+    res.json({result: false, message: "Insufficient arguments for setting word rating."});
   }
 }

@@ -73,7 +73,7 @@ $(window).load(function () {
     $.ajax({
       url: "/api/web/toggle-starred",
       method: "POST",
-      data: "word=" + $(this).data().word + "&starred=" + !$i.hasClass("starred")
+      data: "word=" + $(this).data().word
     }).done(function (response) {
       if (response.result) {
         $i.toggleClass("starred");
@@ -85,8 +85,22 @@ $(window).load(function () {
     });
   }
 
-  function confirmRate() {
-    $(this).hide();
+  function rateWord() {
+    var $this = $(this);
+    var rating = $this.parent().find(".br-current").data("rating-value");
+    $.ajax({
+      url: "/api/web/rate",
+      method: "POST",
+      data: "word=" + $(this).data().word + "&rating=" + rating
+    }).done(function (response) {
+      if (response.result) {
+        $this.hide();
+        toastr.success(response.message);
+      }
+      else {
+        toastr.warning(response.message);
+      }
+    });
   }
 
   function toggleActions() {
@@ -102,7 +116,7 @@ $(window).load(function () {
 
   function initializeCard($card) {
     $card.on("click", ".btn-star-word", starWord);
-    $card.on("click", ".btn-confirm-rate", confirmRate);
+    $card.on("click", ".btn-rate-word", rateWord);
     $card.on("click", ".btn-delete-word", deleteWord);
     $card.on("click", ".card-control", toggleActions);
     $card.find(".select-rate").barrating({
@@ -110,7 +124,7 @@ $(window).load(function () {
       showValues: false,
       showSelectedRating: false,
       onSelect: function () {
-        $(this).closest(".card-actions").find(".btn-confirm-rate").show();
+        $(this).closest(".card-actions").find(".btn-rate-word").show();
       }
     });
   }
