@@ -1,7 +1,7 @@
 $(window).load(function () {
-  var $btnAddWord = $(".btn-add-word");
-  var $emptyNotice = $(".empty-notice");
-
+  /**
+   * Initialize
+   */
   var $grid = $('.word-card-grid');
   var masonryOpts = {
     itemSelector: '.grid-item',
@@ -11,102 +11,14 @@ $(window).load(function () {
   };
   $grid.masonry(masonryOpts);
 
-  $(".search").keyup(function () {
-    var filter = {
-      field: ".word",
-      match: $(this).val(),
-      evaluate: function (value) {
-        return value.search(new RegExp(this.match, "i")) < 0;
-      }
-    };
-    filterWordCards(filter);
-  });
-
-  function filterWordCards(filter) {
-    $grid.children(".grid-item").each(function () {
-      var value = $(this).find(filter.field).text();
-      if (filter.evaluate(value)) {
-        $(this).hide();
-      }
-      else {
-        $(this).show();
-      }
-    });
-    $grid.masonry('layout');
-  }
-
-  $(".filters").find(".filter-by").on("click", function () {
-    console.log($(this).data("filter-by"));
-    $(this).toggleClass("selected");
-  });
-
-  // TODO: optimize this
-  $(".sort-by").on("click", function () {
-    $this = $(this);
-    if (!$this.hasClass("check")) {
-      $this.toggleClass("check");
-      $(".sort-by-options").find("a").each(function () {
-        if (!$(this).is($this)) {
-          $(this).removeClass("check");
-        }
-      });
-      var sortBy = $(this).data("sort-by");
-      var orderBy = $(this).data("order-by");
-      var sortOptions = (sortBy === ".created") ? {
-        selector: sortBy,
-        order: orderBy,
-        data: "epoch"
-      } : {
-        selector: sortBy,
-        order: orderBy
-      };
-      tinysort('.grid-item', sortOptions);
-      $grid.masonry('destroy');
-      $grid.masonry(masonryOpts);
-    }
-  });
-
   toastr.options = {
     "positionClass": "toast-bottom-right",
     "progressBar": true
   };
 
-  $(".word-card").each(function (index, value) {
-    initializeCard($(value));
-  });
-
-  $btnAddWord.on("click", function (event) {
-    event.preventDefault();
-    addWord();
-  });
-  $(".form-add-word").on("keypress", function (event) {
-    if (event.which == 13) {
-      event.preventDefault();
-      addWord();
-    }
-  });
-
-  function addWord() {
-    $btnAddWord.button("loading");
-    $.ajax({
-      url: "/api/web/add",
-      method: "POST",
-      data: "word=" + $(".input-add-word").val()
-    }).done(function (response) {
-      if (response.result) {
-        if($emptyNotice) { $emptyNotice.remove(); }
-        var $newWordCard = $(Handlebars.compile($("#word-card-template").html())(response));
-        initializeCard($newWordCard);
-        $grid.append($newWordCard).masonry("appended", $newWordCard);
-        toastr.success(response.message);
-      }
-      else {
-        toastr.warning(response.message);
-      }
-      $btnAddWord.button("reset");
-    });
-  }
-
+  /**
+   * Interactions
+   */
   function deleteWord() {
     var $wordCardGridItem = $(this).closest(".grid-item");
     $.ajax({
@@ -150,6 +62,7 @@ $(window).load(function () {
       data: "word=" + $(this).data().word + "&rating=" + rating
     }).done(function (response) {
       if (response.result) {
+        $this.parent().find(".select-rate").attr("data-current-rate", rating);
         $this.hide();
         toastr.success(response.message);
       }
@@ -170,6 +83,10 @@ $(window).load(function () {
     });
   }
 
+  $(".word-card").each(function (index, value) {
+    initializeCard($(value));
+  });
+
   function initializeCard($card) {
     $card.on("click", ".btn-star-word", starWord);
     $card.on("click", ".btn-rate-word", rateWord);
@@ -182,6 +99,162 @@ $(window).load(function () {
       onSelect: function () {
         $(this).closest(".card-actions").find(".btn-rate-word").show();
       }
+    });
+  }
+
+  /**
+   * Filters
+   */
+  var filterOptions = {
+    isRated: {}
+  };
+
+  function isStarred($gridItem) {
+    return $gridItem.find(".btn-star-word").hasClass("starred");
+  }
+
+  function isRated(rate) {
+    return function($gridItem) {
+      return $gridItem.find(".select-rate").attr("data-current-rate") == rate;
+    };
+  }
+
+  function hasKeyword(keyword) {
+    return function ($gridItem) {
+      return $gridItem.find(".word").text().search(new RegExp(keyword, "i")) >= 0;
+    };
+  }
+
+  function filterWordCards() {
+    $grid.children(".grid-item").each(function () {
+      var $gridItem = $(this);
+      var isFiltered = true;
+      var hasRateFilter = false;
+      var isRated = false;
+      $.each(filterOptions, function(key, filterFunction) {
+        if(key === "isRated") {
+          if(!$.isEmptyObject(filterOptions.isRated)) {
+            hasRateFilter = true;
+            $.each(filterOptions.isRated, function (k, rateFilterFunction) {
+              isRated = isRated || rateFilterFunction($gridItem);
+            });
+          }
+        }
+        else {
+          isFiltered = isFiltered && filterFunction($gridItem);
+        }
+      });
+
+      if(hasRateFilter) {
+        isFiltered = isFiltered && isRated;
+      }
+
+      if (isFiltered) {
+        $(this).show();
+      }
+      else {
+        $(this).hide();
+      }
+    });
+
+    $grid.masonry('layout');
+  }
+
+  $(".search").keyup(function () {
+    var keyword = $(this).val();
+    if(keyword.length > 0) {
+      filterOptions.hasKeyword = hasKeyword(keyword);
+    }
+    else {
+      delete filterOptions.hasKeyword;
+    }
+    filterWordCards();
+  });
+
+  $(".filter-by-starred").on("click", function () {
+    $(this).toggleClass("selected");
+    if($(this).hasClass("selected")) {
+      filterOptions.isStarred = isStarred;
+    }
+    else {
+      delete filterOptions.isStarred;
+    }
+    filterWordCards();
+  });
+
+  $(".filter-by-rate").on("click", function () {
+    var rate = $(this).text();
+    $(this).toggleClass("selected");
+    if($(this).hasClass("selected")) {
+      filterOptions.isRated["isRated"+rate] = isRated(rate);
+    }
+    else {
+      delete filterOptions.isRated["isRated"+rate];
+    }
+    filterWordCards();
+  });
+
+  $(".sort-by").on("click", function () { // TODO: optimize this
+    $this = $(this);
+    if (!$this.hasClass("check")) {
+      $this.toggleClass("check");
+      $(".sort-by-options").find("a").each(function () {
+        if (!$(this).is($this)) {
+          $(this).removeClass("check");
+        }
+      });
+      var sortBy = $(this).data("sort-by");
+      var orderBy = $(this).data("order-by");
+      var sortOptions = (sortBy === ".created") ? {
+        selector: sortBy,
+        order: orderBy,
+        data: "epoch"
+      } : {
+        selector: sortBy,
+        order: orderBy
+      };
+      tinysort('.grid-item', sortOptions);
+      $grid.masonry('destroy');
+      $grid.masonry(masonryOpts);
+    }
+  });
+
+
+  /**
+   * Adding Word
+   */
+  var $btnAddWord = $(".btn-add-word");
+  var $emptyNotice = $(".empty-notice");
+
+  $btnAddWord.on("click", function (event) {
+    event.preventDefault();
+    addWord();
+  });
+  $(".form-add-word").on("keypress", function (event) {
+    if (event.which == 13) {
+      event.preventDefault();
+      addWord();
+    }
+  });
+
+  function addWord() {
+    $btnAddWord.button("loading");
+    $.ajax({
+      url: "/api/web/add",
+      method: "POST",
+      data: "word=" + $(".input-add-word").val()
+    }).done(function (response) {
+      if (response.result) {
+        if($emptyNotice) { $emptyNotice.remove(); }
+        var $newWordCard = $(Handlebars.compile($("#word-card-template").html())(response));
+        initializeCard($newWordCard);
+        $grid.append($newWordCard).masonry("appended", $newWordCard);
+        toastr.success(response.message);
+      }
+      else {
+        toastr.warning(response.message);
+      }
+      $btnAddWord.button("reset");
     });
   }
 });
