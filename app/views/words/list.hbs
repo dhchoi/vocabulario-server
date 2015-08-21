@@ -22,8 +22,10 @@
                 Order by <i class="caret"></i>
             </button>
             <ul class="dropdown-menu sort-by-options">
-                <li><a class="sort-by" data-sort-by=".word" href="#">Alphabet</a></li>
-                <li><a class="sort-by check" data-sort-by=".created" href="#">Date</a></li>
+                <li><a class="sort-by check" data-sort-by=".created" data-order-by="asc" href="#">Date (ascending)</a></li>
+                <li><a class="sort-by" data-sort-by=".created" data-order-by="desc" href="#">Date (descending)</a></li>
+                <li><a class="sort-by" data-sort-by=".word" data-order-by="asc" href="#">Alphabet (ascending)</a></li>
+                <li><a class="sort-by" data-sort-by=".word" data-order-by="desc" href="#">Alphabet (descending)</a></li>
             </ul>
         </div>
     </div>
@@ -56,5 +58,5 @@
 </div>
 </script>
 {{{js "bower_components/jquery-bar-rating/dist/jquery.barrating.min"}}}
-{{{js "words-main"}}}
+{{{js "list-main"}}}
 {{/extend}}

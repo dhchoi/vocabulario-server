@@ -184,12 +184,13 @@ function formatWord(word) {
     ratings: word.ratings.map(function (rating) {
       return {
         rate: rating.rate,
-        saved: formatDate(rating.saved)
+        saved: rating.saved.getTime()
       }
     }),
     currentRate: word.currentRate,
     starred: word.starred,
-    created: formatDate(word.created)
+    created: formatDate(word.created),
+    createdEpoch: word.created.getTime()
   };
 }
 

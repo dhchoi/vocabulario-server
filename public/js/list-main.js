@@ -26,17 +26,14 @@ $(window).load(function () {
     $grid.children(".grid-item").each(function () {
       var value = $(this).find(filter.field).text();
       if (filter.evaluate(value)) {
-        $(this).fadeOut("fast", function () {
-          $grid.masonry('layout');
-        });
+        $(this).hide();
       }
       else {
-        $(this).fadeIn("fast", function () {
-          $grid.masonry('layout');
-        });
+        $(this).show();
       }
     });
-  };
+    $grid.masonry('layout');
+  }
 
   $(".filters").find(".filter-by").on("click", function () {
     console.log($(this).data("filter-by"));
@@ -50,10 +47,20 @@ $(window).load(function () {
       $this.toggleClass("check");
       $(".sort-by-options").find("a").each(function () {
         if (!$(this).is($this)) {
-          $(this).toggleClass("check");
+          $(this).removeClass("check");
         }
       });
-      tinysort('.grid-item', $(this).data("sort-by"));
+      var sortBy = $(this).data("sort-by");
+      var orderBy = $(this).data("order-by");
+      var sortOptions = (sortBy === ".created") ? {
+        selector: sortBy,
+        order: orderBy,
+        data: "epoch"
+      } : {
+        selector: sortBy,
+        order: orderBy
+      };
+      tinysort('.grid-item', sortOptions);
       $grid.masonry('destroy');
       $grid.masonry(masonryOpts);
     }
