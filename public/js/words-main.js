@@ -3,12 +3,13 @@ $(window).load(function () {
   var $emptyNotice = $(".empty-notice");
 
   var $grid = $('.word-card-grid');
-  $grid.masonry({
+  var masonryOpts = {
     itemSelector: '.grid-item',
     columnWidth: '.grid-sizer',
     percentPosition: true,
     transitionDuration: 0
-  });
+  };
+  $grid.masonry(masonryOpts);
 
   $(".search").keyup(function () {
     var filter = {
@@ -40,6 +41,22 @@ $(window).load(function () {
   $(".filters").find(".filter-by").on("click", function () {
     console.log($(this).data("filter-by"));
     $(this).toggleClass("selected");
+  });
+
+  // TODO: optimize this
+  $(".sort-by").on("click", function () {
+    $this = $(this);
+    if (!$this.hasClass("check")) {
+      $this.toggleClass("check");
+      $(".sort-by-options").find("a").each(function () {
+        if (!$(this).is($this)) {
+          $(this).toggleClass("check");
+        }
+      });
+      tinysort('.grid-item', $(this).data("sort-by"));
+      $grid.masonry('destroy');
+      $grid.masonry(masonryOpts);
+    }
   });
 
   toastr.options = {
