@@ -74,7 +74,7 @@ $(window).load(function () {
 
   function toggleActions() {
     var $this = $(this);
-    $this.find("i").toggleClass("fa-bars").toggleClass("fa-times");
+    $this.toggleClass("toggled");
     $this.parent().find(".card-actions").slideToggle({
       duration: "fast",
       progress: function () {

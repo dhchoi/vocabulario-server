@@ -1,3 +1,4 @@
+@import "variables";
 @import "words-rating";
 
 .fa {
@@ -26,13 +27,13 @@
   }
 
   .selected {
-    background-color: #0000f6;
+    background-color: @blue-neon-bright;
     color: #fff;
   }
 
   .sort-by.check {
     font-weight: bold;
-    color: #0000f6;
+    color: @blue-neon-bright;
   }
 }
 
@@ -59,6 +60,17 @@
     top: 0;
     right: 1.5rem;
     cursor: pointer;
+    color: #646464;
+    transition: color .4s cubic-bezier(.24,.45,.46,.92);
+  }
+  .btn-toggle-actions:hover {
+    color: #000;
+  }
+  .btn-toggle-actions.toggled {
+    color: @blue-neon-bright;
+  }
+  .btn-toggle-actions.toggled:hover {
+    color: darken(@blue-neon-bright, 50%);
   }
 
   .card-actions {
