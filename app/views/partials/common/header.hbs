@@ -31,14 +31,13 @@
                             {{else}}
                                 <img src="{{gravatar user 60}}">
                             {{/if}}
-                            {{#if user.profile.name}}
+                            {{#if user.profile.name~}}
                                 {{{user.profile.name}}}
-                            {{else}}{{#if user.email}}
+                            {{~else~}}{{~#if user.email~}}
                                 {{{user.email}}}
-                             {{else}}
+                            {{~else~}}
                                 {{{user.id}}}
-                            {{/if}}{{/if}}
-                            &nbsp;
+                            {{~/if}}{{/if}}
                             <i class="caret"></i>
                         </a>
                         <ul class="dropdown-menu">
