@@ -3,42 +3,50 @@
 {{/extend}}
 
 {{#if word}}
-<h1>{{word.word}}</h1>
-<div class="clearfix"></div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <h1>{{word.word}}</h1>
+        <div class="clearfix"></div>
+    </div>
+</div>
 <hr>
 <div class="row">
-    <h2>Confidence Rate</h2>
-    <div class="col-md-12">
+    <div class="col-xs-12 col-sm-12">
+        <h2>Confidence Rate</h2>
+    </div>
+    <div class="col-xs-12 col-sm-12">
         <div class="legend"></div>
         <canvas class="chart"></canvas>
     </div>
 </div>
 <hr>
 <div class="row">
-    <h2>Statistics</h2>
-    <div class="col-md-6">
+    <div class="col-xs-12 col-sm-12">
+        <h2>Statistics</h2>
+    </div>
+    <div class="col-xs-12 col-sm-6">
         <h3>Learning Rate for This Word</h3>
         <ul>
           <li><strong>You:</strong> Just Started / Good / Average / Bad</li>
           <li><strong>Others:</strong> Just Started / Good / Average / Bad</li>
         </ul>
     </div>
-    <div class="col-md-6">
+    <div class="col-xs-12 col-sm-6">
         <h3>Time Taken to Memorize</h3>
         <ul>
           <li><strong>You:</strong> n days (and continuing)</li>
           <li><strong>Others:</strong> n days (minimum)</li>
         </ul>
     </div>
-    <div class="col-md-6">
+    <div class="col-xs-12 col-sm-6">
         <h3>Popularity</h3>
         <ul>
             <li><strong>Number of People:</strong> ~ n people</li>
             <li><strong>Percentage:</strong> n %</li>
         </ul>
     </div>
-    <div class="col-md-6">
-        <h3>Where This Word Appeared The Most</h3>
+    <div class="col-xs-12 col-sm-6">
+        <h3>Where It Appeared The Most</h3>
         <ul>
             <li>Foo bar biz baz. <a href="">[link]</a></li>
             <li>Goo gar giz gaz. <a href="">[link]</a></li>
@@ -48,34 +56,44 @@
 </div>
 <hr>
 <div class="row">
-    <h2>Set Reminders for This Word</h2>
-    <div class="col-md-6">
-        <div class="radio">
-            <label>
-                <input type="radio" name="reminder-options" value="none" checked>None
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="reminder-options" value="daily">Daily
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="reminder-options" value="weekly">Weekly
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="reminder-options" value="monthly">Monthly
-            </label>
-        </div>
+    <div class="col-xs-12 col-sm-12">
+        <h2>Set Reminders for This Word</h2>
+        <ul class="reminders">
+            <li class="radio">
+                <label>
+                    <input type="radio" name="reminder-options" value="none" checked>None
+                </label>
+            </li>
+            <li class="radio">
+                <label>
+                    <input type="radio" name="reminder-options" value="daily">Daily
+                </label>
+            </li>
+            <li class="radio">
+                <label>
+                    <input type="radio" name="reminder-options" value="weekly">Weekly
+                </label>
+            </li>
+            <li class="radio">
+                <label>
+                    <input type="radio" name="reminder-options" value="monthly">Monthly
+                </label>
+            </li>
+        </ul>
     </div>
 </div>
 {{else}}
-<h1>Non-existing word!</h1>
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <h1>Non-existing word!</h1>
+    </div>
+</div>
 <hr>
-<p class="lead">It seems that you haven't added that word yet.</p>
+<div class="row">
+    <div class="col-xs-12 col-sm-12">
+        <p class="lead">It seems that you haven't added that word yet.</p>
+    </div>
+</div>
 {{/if}}
 
 {{#extend "scripts"}}
