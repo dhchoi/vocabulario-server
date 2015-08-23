@@ -6,8 +6,39 @@
 <h1>{{word.word}}</h1>
 <div class="clearfix"></div>
 <hr>
-<h2>Confidence Rate</h2>
-<canvas class="chart"></canvas>
+<div class="row">
+    <h2>Confidence Rate</h2>
+    <div class="col-md-12">
+        <div class="legend"></div>
+        <canvas class="chart"></canvas>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <h2>Statistics</h2>
+    <div class="col-md-6">
+        <h3>Learning Rate for this Word</h3>
+        <ul>
+          <li><strong>You:</strong> JustStarted / Good / Average / Bad</li>
+          <li><strong>Other's:</strong> JustStarted / Good / Average / Bad</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h3>Time Taken to Memorize</h3>
+        <ul>
+          <li><strong>You:</strong> x days</li>
+          <li><strong>Other's:</strong> x days</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h3>Example Sentences From Others</h3>
+        <ul>
+            <li>Foo bar biz baz.</li>
+            <li>Foo bar biz baz.</li>
+            <li>Foo bar biz baz.</li>
+        </ul>
+    </div>
+</div>
 {{else}}
 <h1>Non-existing word!</h1>
 <hr>
@@ -15,10 +46,12 @@
 {{/if}}
 
 {{#extend "scripts"}}
+{{#if word}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 <script>
-//var d = JSON.stringify();
-console.log({{{word.ratings}}});
+window.ratingsData = {{{json word.ratings}}};
 </script>
 {{{js "bower_components/Chart.js/Chart.min"}}}
 {{{js "progress-main"}}}
+{{/if}}
 {{/extend}}

@@ -190,7 +190,7 @@ function formatWord(word) {
     currentRate: word.currentRate,
     starred: word.starred,
     created: formatDate(word.created),
-    createdEpoch: word.created.getTime()
+    createdEpoch: word.created.getTime() // TODO: might have timezone issues
   };
 }
 
