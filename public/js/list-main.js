@@ -197,22 +197,37 @@ $(window).load(function () {
   $(".sort-by").on("click", function () { // TODO: optimize this
     $this = $(this);
     if (!$this.hasClass("check")) {
+      // toggle classes
       $this.toggleClass("check");
       $(".sort-by-options").find("a").each(function () {
         if (!$(this).is($this)) {
           $(this).removeClass("check");
         }
       });
+      // sort
       var sortBy = $(this).data("sort-by");
       var orderBy = $(this).data("order-by");
-      var sortOptions = (sortBy === ".created") ? {
-        selector: sortBy,
-        order: orderBy,
-        data: "epoch"
-      } : {
-        selector: sortBy,
-        order: orderBy
-      };
+      var sortOptions = null;
+      if(sortBy === ".created") {
+        sortOptions = {
+          selector: sortBy,
+          order: orderBy,
+          data: "epoch"
+        };
+      }
+      else if (sortBy === ".word") {
+        sortOptions = {
+          selector: sortBy,
+          order: orderBy
+        };
+      }
+      else if (sortBy === ".select-rate") {
+        sortOptions = {
+          selector: sortBy,
+          order: orderBy,
+          data: "current-rate"
+        };
+      }
       tinysort('.grid-item', sortOptions);
       $grid.masonry('destroy');
       $grid.masonry(masonryOpts);
