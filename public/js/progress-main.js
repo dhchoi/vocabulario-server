@@ -1,5 +1,4 @@
 $(window).load(function () {
-  console.log(window.ratingsData);
   var ratingsData = getAxes(window.ratingsData);
   var chartData = {
     labels: ratingsData.dates,
@@ -14,7 +13,6 @@ $(window).load(function () {
         pointHighlightStroke: "rgba(151,187,205,1)",
         data: ratingsData.rates
       },
-      // TODO: also show dataset of average among all users
       {
         label: "Average",
         fillColor: "rgba(220,220,220,0.2)",
@@ -31,12 +29,15 @@ $(window).load(function () {
   var ctx = $(".chart").get(0).getContext("2d");
   var chart = new Chart(ctx).Line(chartData, {
     responsive: true,
-    //legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\" style=\"list-style-type: none\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span></li><%}%></ul>"
-    legendTemplate: "<% for (var i=0; i<datasets.length; i++){%><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span><%}%>"
+    scaleOverride: true,
+    scaleSteps: 4,
+    scaleStepWidth: 1,
+    scaleStartValue: 1,
+    legendTemplate: "<% for (var i=0; i < datasets.length; i++){%><span style=\"background-color:<%=datasets[i].strokeColor%>\"><%if(datasets[i].label){%><%=datasets[i].label%><%}%></span><%}%>"
   });
-  console.log(chart.generateLegend());
   $(".legend").html(chart.generateLegend());
 
+  // TODO: also show dataset of average among all users
   function getAverageRates(rates) {
     var average = [];
     for(var i = 0; i < rates.length; i++) {
