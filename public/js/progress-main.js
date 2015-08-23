@@ -14,7 +14,7 @@ $(window).load(function () {
         data: ratingsData.rates
       },
       {
-        label: "Average",
+        label: "Users' Average",
         fillColor: "rgba(220,220,220,0.2)",
         strokeColor: "rgba(220,220,220,1)",
         pointColor: "rgba(220,220,220,1)",
