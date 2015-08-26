@@ -15,9 +15,11 @@ module.exports = function (passport, config) {
     })
     .get(function (req, res) {
       if (req.user && req.isAuthenticated()) {
-        res.render('words/list', {
-          title: 'Main',
-          words: req.user.getWords()
+        req.user.getAllWords(null, function (entries) {
+          res.render('words/list', {
+            title: 'Main',
+            words: entries
+          });
         });
       }
       else {
@@ -35,10 +37,12 @@ module.exports = function (passport, config) {
   router.route("/word/:word")
     .get(passportConf.isAuthenticated, function (req, res) {
       var word = req.params.word;
-      res.render('words/progress', {
-        title: 'Progress - ' + word,
-        word: req.user.getWord(word)
-      });
+      req.user.getWord(word, function (wordEntry) {
+        res.render('words/progress', {
+          title: 'Progress - ' + word,
+          word: wordEntry
+        });
+      })
     });
 
   router.route("/login")
