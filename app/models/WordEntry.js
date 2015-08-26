@@ -7,7 +7,7 @@ var WordDefinition = require("./WordDefinition");
 
 var WordEntrySchema = new mongoose.Schema({
   word: {type: String, lowercase: true},
-  definition: {},
+  wordDefinition: {},
   examples: [{
     example: {type: String, default: ""},
     url: {type: String, default: ""},
@@ -78,11 +78,11 @@ WordEntrySchema.statics.addWordEntry = function (user, word) {
     .then(function (wordEntry) {
       if(!wordEntry) {
         WordDefinition.getWordDefinition(word, "wordreference")
-          .then(function (definition) {
+          .then(function (wordDefinition) {
             var newWordEntry = new wordEntrySchema();
             var date = new Date();
             newWordEntry.word = word; // TODO: check field defaults (such as first rating)
-            newWordEntry.definition = definition;
+            newWordEntry.wordDefinition = wordDefinition;
             newWordEntry.created = date;
             newWordEntry.user = user;
             newWordEntry.addRating(1, date);
@@ -117,7 +117,7 @@ WordEntrySchema.statics.formatWordEntry = function (wordEntry) {
 
   return {
     word: wordEntry.word,
-    definition: wordEntry.definitions,
+    wordDefinition: wordEntry.wordDefinition,
     examples: wordEntry.examples,
     ratings: wordEntry.ratings.map(function (rating) {
       return {

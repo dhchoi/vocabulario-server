@@ -44,7 +44,7 @@
     {{else}}
         {{#each words}}
             <div class="grid-item">
-                {{>word-card}}
+                {{>word/card}}
             </div>
         {{/each}}
     {{/unless}}
@@ -56,7 +56,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/tinysort/2.2.2/tinysort.min.js"></script>
 <script id="word-card-template" type="text/x-handlebars-template">
 <div class="grid-item">
-    {{>word-card isTemplate=true}}
+    {{>word/card isTemplate=true}}
 </div>
 </script>
 {{{js "bower_components/jquery-bar-rating/dist/jquery.barrating.min"}}}

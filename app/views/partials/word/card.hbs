@@ -2,7 +2,13 @@
 <div class="word-card">
   <div class="card-content">
     <h2 class="word"><a href="/word/{{word}}">{{word}}</a></h2>
-    <p class="definition">{{{definition}}}</p>
+    <span class="pronunciation-symbol">{{wordDefinition.pronunciationSymbol}}</span>
+    {{#each wordDefinition.definitions}}
+     <div class="definition">
+       <div class="part-of-speech">{{{partOfSpeech}}}</div>
+       <div class="definition-text">{{{definition}}}</div>
+     </div>
+    {{/each}}
     <p class="created" data-epoch="{{createdEpoch}}">{{created}}</p>
   </div>
   <div class="btn-toggle-actions">
@@ -26,7 +32,13 @@
 <div class="word-card">
   <div class="card-content">
       <h2 class="word"><a href="/word/\{{word}}">\{{word}}</a></h2>
-      <p class="definition">\{{{definition}}}</p>
+      <span class="pronunciation-symbol">\{{wordDefinition.pronunciationSymbol}}</span>
+      \{{#each wordDefinition.definitions}}
+        <div class="definition">
+          <div class="part-of-speech">\{{{partOfSpeech}}}</div>
+          <div class="definition-text">\{{{definition}}}</div>
+        </div>
+      \{{/each}}
       <p class="created" data-epoch="\{{createdEpoch}}">\{{created}}</p>
   </div>
   <div class="btn-toggle-actions">

@@ -69,36 +69,6 @@ WordDefinitionSchema.statics.addWordDefinition = function (word, source) {
     });
 
   return deferred.promise;
-
-  //dictionary.getDefinition(word, source, function (err, result) {
-  //  if (!err) {
-  //    var newWord = WordEntry.createNewEntry(word, result);
-  //    user.wordEntries.push(newWord);
-  //    user.save(function (err) {
-  //      if (!err) {
-  //        cb(null, _.extend({
-  //          result: true,
-  //          message: "Add '" + word + "' success."
-  //        }, formatWord(newWord._doc)));
-  //      }
-  //      else {
-  //        //res.json(err);
-  //        console.log(err);
-  //        cb(err, {
-  //          result: false,
-  //          message: "Error while saving word definition to database."
-  //        });
-  //      }
-  //    });
-  //  }
-  //  else {
-  //    // TODO: check if this is the right way (and find something that ends res)
-  //    cb(err, {
-  //      result: false,
-  //      message: result
-  //    });
-  //  }
-  //});
 };
 
 module.exports = mongoose.model('WordDefinition', WordDefinitionSchema);
