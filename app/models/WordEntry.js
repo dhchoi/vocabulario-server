@@ -4,6 +4,7 @@ var Q = require('q');
 var moment = require("moment");
 var mongoose = require('mongoose');
 var WordDefinition = require("./WordDefinition");
+var source = "gcide";
 
 var WordEntrySchema = new mongoose.Schema({
   word: {type: String, lowercase: true},
@@ -77,7 +78,7 @@ WordEntrySchema.statics.addWordEntry = function (user, word) {
   this.getWordEntry(user, word)
     .then(function (wordEntry) {
       if(!wordEntry) {
-        WordDefinition.getWordDefinition(word, "wordreference")
+        WordDefinition.getWordDefinition(word, source)
           .then(function (wordDefinition) {
             var newWordEntry = new wordEntrySchema();
             var date = new Date();

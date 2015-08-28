@@ -3,13 +3,14 @@
   <div class="card-content">
     <h2 class="word"><a href="/word/{{word}}">{{word}}</a></h2>
     <span class="pronunciation-symbol">{{wordDefinition.pronunciationSymbol}}</span>
+    <span class="pronunciation-file">{{wordDefinition.pronunciationFile}}</span>
     {{#each wordDefinition.definitions}}
      <div class="definition">
-       <div class="part-of-speech">{{{partOfSpeech}}}</div>
-       <div class="definition-text">{{{definition}}}</div>
+       <div class="definition-part-of-speech">{{partOfSpeech}}</div>
+       <div class="definition-text">{{{text}}}</div>
      </div>
     {{/each}}
-    <p class="created" data-epoch="{{createdEpoch}}">{{created}}</p>
+    <div class="created" data-epoch="{{createdEpoch}}">{{created}}</div>
   </div>
   <div class="btn-toggle-actions">
     <i class="fa fa-bars"></i>
@@ -33,11 +34,12 @@
   <div class="card-content">
       <h2 class="word"><a href="/word/\{{word}}">\{{word}}</a></h2>
       <span class="pronunciation-symbol">\{{wordDefinition.pronunciationSymbol}}</span>
+      <span class="pronunciation-file">\{{wordDefinition.pronunciationFile}}</span>
       \{{#each wordDefinition.definitions}}
-        <div class="definition">
-          <div class="part-of-speech">\{{{partOfSpeech}}}</div>
-          <div class="definition-text">\{{{definition}}}</div>
-        </div>
+          <div class="definition">
+              <div class="definition-part-of-speech">\{{partOfSpeech}}</div>
+              <div class="definition-text">\{{{text}}}</div>
+          </div>
       \{{/each}}
       <p class="created" data-epoch="\{{createdEpoch}}">\{{created}}</p>
   </div>

@@ -5,15 +5,42 @@ var mongoose = require('mongoose');
 var dictionary = require("../helpers/dictionary");
 
 var WordDefinitionSchema = new mongoose.Schema({
+  //"word": {type: String, lowercase: true},
+  //"plural": {type: String, lowercase: true},
+  //"entries:": [{
+  //  "types": [{
+  //    "partOfSpeech": {type: String, default: ""},
+  //    "definitions": [{
+  //      "text": {type: String, default: ""},
+  //      "category": {type: String, default: ""},
+  //      "label": {type: String, default: ""},
+  //      _id: false
+  //    }],
+  //    _id: false
+  //  }],
+  //  "pronunciationSymbol": {type: String, default: ""},
+  //  "pronunciationFile": {type: String, default: ""},
+  //  _id: false
+  //}],
+  //"source": {type: String, lowercase: true}
   "word": {type: String, lowercase: true},
-  "source": {type: String, lowercase: true},
-  "definitions": [{
-    "definition": {type: String, default: ""},
-    "partOfSpeech": {type: String, default: ""},
-    _id: false
+  "definitions:": [{
+    "asdf": {type: String, default: ""}
   }],
+  //  [{
+  //  "partOfSpeech": {type: String, default: ""},
+  //  "text": {type: String, default: ""},
+  //  //"labels": [{
+  //  //  "text": {type: String, default: ""},
+  //  //  "type": {type: String, default: ""},
+  //  //  _id: false
+  //  //}],
+  //  labels: {},
+  //  _id: false
+  //}],
   "pronunciationSymbol": {type: String, default: ""},
-  "pronunciationFile": {type: String, default: ""}
+  "pronunciationFile": {type: String, default: ""},
+  "source": {type: String, lowercase: true}
 });
 
 WordDefinitionSchema.statics.getWordDefinition = function (word, source) {
@@ -48,13 +75,12 @@ WordDefinitionSchema.statics.addWordDefinition = function (word, source) {
   var newWordDefinition = new this();
 
   dictionary.getDefinition(word, source)
-    .then(function (definition) {
+    .then(function (definitions) {
+      var obj = {"asdf": 1};
       newWordDefinition.word = word;
       newWordDefinition.source = source;
-      newWordDefinition.definitions.push({
-        definition: definition,
-        partOfSpeech: ""
-      });
+      // TODO: array not being saved
+      newWordDefinition.definitions.push(obj);//definitions;
       newWordDefinition.save(function (error) {
         if (error) {
           deferred.reject(new Error(error));
